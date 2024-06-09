@@ -1,18 +1,15 @@
 # LWJGL3ify
 
-Brings LWJGL3 and modern Java versions to Minecraft 1.7.10.
+Brings LWJGL3 and modern Java versions to Minecraft 1.12.2.
 Bundles [RetroFuturaBootstrap](https://github.com/GTNewHorizons/RetroFuturaBootstrap) as a flexible early load plugin system.
 
 # Usage
 
-Lwjgl3ify depends on Unimixins (<https://github.com/LegacyModdingMC/UniMixins/>), use at least version 0.1.7 with the GTNHMixins module.
-Hodgepodge (<https://github.com/GTNewHorizons/Hodgepodge>) is strongly recommended, it has many Java 17+ compatibility patches for ARR mods (Biomes'o'Plenty, Witchery, JourneyMap, and more) which we could not directly fix in the GTNH forks.
+Lwjgl3ify depends on MixinBooter (<https://github.com/CleanroomMC/MixinBooter>).
 
 ## Client
 
-### Non-GTNH 1.7.10 instance setup
-
-**If you are using a GregTech New Horizons pre-packaged Java 17+ instance, skip to the next section!**
+### Instance setup
 
 To install in PrismLauncher or MultiMC:
 
@@ -26,11 +23,7 @@ Make sure you have installed the UniMixins GTNHMixins and Mixin modules, or the 
 Change the instance java version to 17.0.6, 19.0.2, 20 or 21 (or newer), these are the currently supported versions.
 You can also use Java 11 if you remove the `-Djava.security.manager=allow` argument from `patches/me.eigenraven.lwjgl3ify.forgepatches.json`.
 
-### MultiMC setup (GTNH and non-GTNH)
-
-> [!IMPORTANT]
-> If you're using GTNH 2.5.1 or older, use the lwjgl3ify 1.x arguments from <https://github.com/GTNewHorizons/lwjgl3ify/blob/2229295b9fe5ed3304f62288f76f84bdb79ff5bb/README.MD#multimc-setup-gtnh-and-non-gtnh>.
-> The following arguments are relevant to the 2.x version.
+### MultiMC setup
 
 For MultiMC, you need to manually put in extra java arguments, prismlauncher can load them from the patches json files automatically:
 ```
@@ -46,18 +39,15 @@ On startup, a window should appear prompting you to select a modern Java version
 If you want to tweak your default window size, OpenGL context properties or other more advanced settings, check out the config file in `config/lwjgl3ify.cfg` after the first startup.
 
 ## Server
-First, install a working 1.7.10 Forge server, from a modpack zip or using forge's installer.
-Then, install the mod jar (and unimixins, hodgepodge and gtnhlib as needed) in `mods/`, and download the `forgePatches` jar. Put the forgePatches jar in the same folder as your forge-universal and minecraft server jars.
+First, install a working 1.12.2 Forge server, from a modpack zip or using forge's installer.
+Then, install the mod jar (and mixinbooter as needed) in `mods/`, and download the `forgePatches` jar. Put the forgePatches jar in the same folder as your forge-universal and minecraft server jars.
 **Thermos/Crucible/Hybrid servers are not supported!**.
-Lwjgl3ify also depends on Unimixins (<https://github.com/LegacyModdingMC/UniMixins/>), use at least version 0.1.7.
+Lwjgl3ify also depends on MixinBooter (<https://github.com/CleanroomMC/MixinBooter>).
 Rename the forgePatches jar to just `lwjgl3ify-forgePatches.jar`. Create a file named `java9args.txt` with the contents of [the file in this repository](java9args.txt).
 You can now launch the server with a command like the following, assuming the first java executable on your PATH is java 11/17/newer:
 ```
 java -Xmx6G -Xms6G @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui
 ```
-
-# LiteLoader compatibility
-If you install LiteLoader via MultiMC or a fork like PrismLauncher, make sure to move the "LiteLoader" entry above the "LWJGL3ify Launch Args" entry, otherwise the launch will fail.
 
 # How does it work?
 
