@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 
 import net.minecraft.item.ItemStack;
 
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -11,10 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import com.google.common.base.Throwables;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.registry.GameRegistry;
-
-@Mixin(targets = { "cpw.mods.fml.common.registry.ItemStackHolderRef" }, remap = false)
+@Mixin(targets = { "net.minecraftforge.fml.common.registry.ItemStackHolderRef" }, remap = false)
 public class ItemStackHolderRef {
 
     @Shadow(remap = false)

@@ -2,15 +2,15 @@ package me.eigenraven.lwjgl3ify.textures;
 
 import net.minecraft.client.renderer.StitcherException;
 import net.minecraft.client.renderer.texture.Stitcher;
-import net.minecraft.util.MathHelper;
 
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.stb.STBRPContext;
 import org.lwjgl.stb.STBRPNode;
 import org.lwjgl.stb.STBRPRect;
 import org.lwjgl.stb.STBRectPack;
 
-import cpw.mods.fml.common.ProgressManager;
 import me.eigenraven.lwjgl3ify.Lwjgl3ify;
 import me.eigenraven.lwjgl3ify.api.Lwjgl3Aware;
 
@@ -49,10 +49,9 @@ public class StbStitcher {
                 maxW = Math.max(maxW, width);
                 maxH = Math.max(maxH, height);
             }
-
-            maxW = MathHelper.roundUpToPowerOfTwo(maxW);
-            maxH = MathHelper.roundUpToPowerOfTwo(maxH);
-            final int guessedSqSide = MathHelper.roundUpToPowerOfTwo((int) Math.ceil(Math.sqrt(sqSize)));
+            maxW = MathHelper.smallestEncompassingPowerOfTwo(maxW);
+            maxH = MathHelper.smallestEncompassingPowerOfTwo(maxH);
+            final int guessedSqSide = MathHelper.smallestEncompassingPowerOfTwo((int) Math.ceil(Math.sqrt(sqSize)));
             int atlasWidth = Math.max(guessedSqSide, maxW * 2);
             int atlasHeight = Math.max(guessedSqSide, maxH * 2);
 

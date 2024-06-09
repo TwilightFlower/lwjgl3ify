@@ -32,7 +32,7 @@ public class ServerMain {
             Method main = launchwrapper.getMethod("main", String[].class);
             String[] allArgs = new String[args.length + 2];
             allArgs[0] = "--tweakClass";
-            allArgs[1] = "cpw.mods.fml.common.launcher.FMLServerTweaker";
+            allArgs[1] = "net.minecraftforge.fml.common.launcher.FMLServerTweaker";
             System.arraycopy(args, 0, allArgs, 2, args.length);
             main.invoke(null, (Object) allArgs);
         } catch (Exception e) {

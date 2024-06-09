@@ -12,12 +12,12 @@ import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.relauncher.CoreModManager;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
 import org.apache.logging.log4j.LogManager;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.CoreModManager;
-import cpw.mods.fml.relauncher.FMLLaunchHandler;
-import cpw.mods.fml.relauncher.FMLRelaunchLog;
 
 public class Lwjgl3ifyRelauncherTweaker implements ITweaker {
 
@@ -52,19 +52,19 @@ public class Lwjgl3ifyRelauncherTweaker implements ITweaker {
             final String coreModName = myFile.getName();
             boolean isReparseable = !System.getProperty("java.class.path")
                 .contains(coreModName);
-            FMLRelaunchLog.log.getLogger()
+            FMLLog.log
                 .info("Lwjgl3ify reparseable status: {} (name: {})", isReparseable, coreModName);
             // If this tweaker is loaded, FML skips loading the coremod by default.
             Launch.classLoader.addTransformerExclusion("me.eigenraven.lwjgl3ify.core.Lwjgl3ifyCoremod");
             final Class<CoreModManager> cmmClass = (Class<CoreModManager>) Class
-                .forName("cpw.mods.fml.relauncher.CoreModManager", true, Launch.classLoader);
+                .forName("net.minecraftforge.fml.relauncher.CoreModManager", true, Launch.classLoader);
 
             if (isReparseable) {
                 final Method cmmGetReparseableCoremods = cmmClass.getMethod("getReparseableCoremods");
-                final Method cmmGetLoadedCoremods = cmmClass.getMethod("getLoadedCoremods");
+                final Method cmmGetIgnoredMods = cmmClass.getMethod("getIgnoredMods");
                 final List<String> reparseableCoremods = (List<String>) cmmGetReparseableCoremods.invoke(null);
-                final List<String> loadedCoremods = (List<String>) cmmGetLoadedCoremods.invoke(null);
-                if (loadedCoremods.remove(coreModName)) {
+                final List<String> ignoredMods = (List<String>) cmmGetIgnoredMods.invoke(null);
+                if (ignoredMods.remove(coreModName)) {
                     FMLRelaunchLog.log.getLogger()
                         .info("Removed lwjgl3ify from the list of non-mod coremods");
                 }

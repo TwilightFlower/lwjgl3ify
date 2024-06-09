@@ -33,12 +33,10 @@ public class ForgePatchTransformer implements RfbClassTransformer {
         return "forge-patch";
     }
 
-    public static final String TRACING_PRINT_STREAM = "cpw.mods.fml.common.TracingPrintStream";
-    public static final String FML_SECURITY_MANAGER = "cpw.mods.fml.relauncher.FMLSecurityManager";
-    public static final String ENUM_HELPER = "net.minecraftforge.common.util.EnumHelper";
+    public static final String TRACING_PRINT_STREAM = "net.minecraftforge.fml.common.TracingPrintStream";
+    public static final String FML_SECURITY_MANAGER = "net.minecraftforge.fml.relauncher.FMLSecurityManager";
 
-    public static final String[] PATCHED_CLASSES = new String[] { TRACING_PRINT_STREAM, FML_SECURITY_MANAGER,
-        ENUM_HELPER };
+    public static final String[] PATCHED_CLASSES = new String[] { TRACING_PRINT_STREAM, FML_SECURITY_MANAGER };
 
     @Override
     public boolean shouldTransformClass(@NotNull ExtensibleClassLoader classLoader,
@@ -61,7 +59,6 @@ public class ForgePatchTransformer implements RfbClassTransformer {
         switch (className) {
             case TRACING_PRINT_STREAM -> tfTracingPrintStream(classNode);
             case FML_SECURITY_MANAGER -> tfFmlSecurityManager(classNode);
-            case ENUM_HELPER -> tfEnumHelper(classNode);
         }
     }
 
@@ -158,47 +155,5 @@ public class ForgePatchTransformer implements RfbClassTransformer {
         if (matches < 2) {
             logger.warn("Only found {}<2 instances of AIOOB fixes in FMLSecurityManager", matches);
         }
-    }
-
-    private void tfEnumHelper(@NotNull ClassNodeHandle handle) {
-        // Redirect everything to our own implementation, too much has changed
-        final ClassNode node = handle.getNode();
-        if (node == null || node.methods == null) {
-            logger.error("Enum Helper missing class data");
-            return;
-        }
-        final String INTERNAL_TARGET = "me/eigenraven/lwjgl3ify/EnumHelper";
-        final List<MethodNode> newMethods = new ArrayList<>();
-        for (final MethodNode oldMethod : node.methods) {
-            if (oldMethod.instructions == null || "<clinit>".equals(oldMethod.name)) {
-                newMethods.add(oldMethod);
-                continue;
-            }
-            final Type desc = Type.getMethodType(oldMethod.desc);
-            final boolean isStatic = (oldMethod.access & ACC_STATIC) != 0;
-            if (!isStatic) {
-                newMethods.add(oldMethod);
-                continue;
-            }
-            final MethodNode newMethod = new MethodNode(
-                oldMethod.access,
-                oldMethod.name,
-                oldMethod.desc,
-                oldMethod.signature,
-                null);
-            final InsnList insns = newMethod.instructions;
-            insns.clear();
-            final InstructionAdapter ihelp = new InstructionAdapter(newMethod);
-            final Type[] args = desc.getArgumentTypes();
-            for (int i = 0; i < args.length; i++) {
-                ihelp.load(i, args[i]);
-            }
-            ihelp.invokestatic(INTERNAL_TARGET, newMethod.name, newMethod.desc, false);
-            ihelp.areturn(desc.getReturnType());
-            ihelp.visitMaxs(args.length, args.length);
-            ihelp.visitEnd();
-            newMethods.add(newMethod);
-        }
-        node.methods = newMethods;
     }
 }

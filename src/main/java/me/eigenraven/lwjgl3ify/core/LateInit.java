@@ -6,7 +6,7 @@ import org.lwjgl.system.Configuration;
 import org.lwjgl.system.Platform;
 import org.lwjglx.Sys;
 
-import cpw.mods.fml.relauncher.FMLLaunchHandler;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 
 public class LateInit {
 

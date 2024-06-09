@@ -9,11 +9,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import me.eigenraven.lwjgl3ify.WasFinalObjectHolder;
 
-@Mixin(value = { cpw.mods.fml.common.registry.ObjectHolderRegistry.class }, remap = false)
+@Mixin(value = { net.minecraftforge.registries.ObjectHolderRegistry.class }, remap = false)
 public abstract class ObjectHolderRegistry {
 
     @Redirect(
-        method = { "cpw.mods.fml.common.registry.ObjectHolderRegistry.scanClassForFields" },
+        method = { "net.minecraftforge.registries.ObjectHolderRegistry.scanClassForFields" },
         at = @At(value = "INVOKE", target = "Ljava/lang/reflect/Field;getModifiers()I"),
         remap = false,
         require = 1)

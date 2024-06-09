@@ -1,8 +1,7 @@
 package me.eigenraven.lwjgl3ify.rfb.transformers;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.jar.Manifest;
 
 import org.intellij.lang.annotations.Pattern;
@@ -23,8 +22,21 @@ import me.eigenraven.lwjgl3ify.WasFinalObjectHolder;
 import me.eigenraven.lwjgl3ify.core.Lwjgl3ifyCoremod;
 
 public class UnfinalizeObjectHoldersTransformer implements RfbClassTransformer {
+    private static final Set<String> HARDCODED_MC_CLASSES = new HashSet<>();
+    final byte[] QUICKSCAN_BYTES = "net/minecraftforge/fml/common/registry/GameRegistry".getBytes(StandardCharsets.UTF_8);
 
-    final byte[] QUICKSCAN_BYTES = "cpw/mods/fml/common/registry/GameRegistry".getBytes(StandardCharsets.UTF_8);
+    static {
+        // forge hardcodes these
+        HARDCODED_MC_CLASSES.addAll(Arrays.asList(new String[]{
+            "net.minecraft.init.Blocks",
+            "net.minecraft.init.Items",
+            "net.minecraft.init.MobEffects",
+            "net.minecraft.init.Biomes",
+            "net.minecraft.init.Enchantments",
+            "net.minecraft.init.SoundEvents",
+            "net.minecraft.init.PotionTypes"
+        }));
+    }
 
     @Pattern("[a-z0-9-]+")
     @Override
@@ -39,7 +51,7 @@ public class UnfinalizeObjectHoldersTransformer implements RfbClassTransformer {
         if (!classNode.isPresent()) {
             return false;
         }
-        if (className.equals("net.minecraft.init.Blocks") || className.equals("net.minecraft.init.Items")) {
+        if (HARDCODED_MC_CLASSES.contains(className)) {
             return true;
         }
         if (classNode.isOriginal()) {
@@ -58,7 +70,7 @@ public class UnfinalizeObjectHoldersTransformer implements RfbClassTransformer {
         }
         boolean transformClass = false;
         boolean workDone = false;
-        if (name.equals("net.minecraft.init.Blocks") || name.equals("net.minecraft.init.Items")) {
+        if (HARDCODED_MC_CLASSES.contains(name)) {
             transformClass = true;
         }
         transformClass |= isHolder(node.visibleAnnotations);
@@ -91,16 +103,16 @@ public class UnfinalizeObjectHoldersTransformer implements RfbClassTransformer {
             return false;
         }
         for (AnnotationNode annotationNode : annotations) {
-            if (annotationNode.desc.contains("cpw/mods/fml/common/registry/GameRegistry$ObjectHolder")) {
+            if (annotationNode.desc.contains("net/minecraftforge/fml/common/registry/GameRegistry$ObjectHolder")) {
                 return true;
             }
-            if (annotationNode.desc.contains("cpw/mods/fml/common/registry/GameRegistry$ItemStackHolder")) {
+            if (annotationNode.desc.contains("net/minecraftforge/fml/common/registry/GameRegistry$ItemStackHolder")) {
                 return true;
             }
-            if (annotationNode.desc.contains("cpw/mods/fml/common/registry/GameRegistry/ObjectHolder")) {
+            if (annotationNode.desc.contains("net/minecraftforge/fml/common/registry/GameRegistry/ObjectHolder")) {
                 return true;
             }
-            if (annotationNode.desc.contains("cpw/mods/fml/common/registry/GameRegistry/ItemStackHolder")) {
+            if (annotationNode.desc.contains("net/minecraftforge/fml/common/registry/GameRegistry/ItemStackHolder")) {
                 return true;
             }
         }

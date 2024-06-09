@@ -16,52 +16,23 @@ public class EarlyConfig {
 
     public static final String[] DEFAULT_EXTENSIBLE_ENUMS = new String[] {
         // From EnumHelper
-        "net.minecraft.item.EnumAction", "net.minecraft.item.ItemArmor$ArmorMaterial",
-        "net.minecraft.entity.item.EntityPainting$EnumArt", "net.minecraft.entity.EnumCreatureAttribute",
+        "net.minecraft.item.EnumAction",
+        "net.minecraft.item.ItemArmor$ArmorMaterial",
+        "net.minecraft.entity.item.EntityPainting$EnumArt",
+        "net.minecraft.entity.EnumCreatureAttribute",
         "net.minecraft.entity.EnumCreatureType",
         "net.minecraft.world.gen.structure.StructureStrongholdPieces$Stronghold$Door",
-        "net.minecraft.enchantment.EnumEnchantmentType", "net.minecraft.entity.Entity$EnumEntitySize",
+        "net.minecraft.enchantment.EnumEnchantmentType",
         "net.minecraft.block.BlockPressurePlate$Sensitivity",
-        "net.minecraft.util.MovingObjectPosition$MovingObjectType", "net.minecraft.world.EnumSkyBlock",
-        "net.minecraft.entity.player.EntityPlayer$EnumStatus", "net.minecraft.item.Item$ToolMaterial",
+        "net.minecraft.util.math.RayTraceResult$Type",
+        "net.minecraft.world.EnumSkyBlock",
+        "net.minecraft.entity.player.EntityPlayer$SleepResult",
+        "net.minecraft.item.Item$ToolMaterial",
         "net.minecraft.item.EnumRarity",
-        //
-        "net.minecraftforge.event.terraingen.PopulateChunkEvent$Populate$EventType",
-        "net.minecraftforge.event.terraingen.InitMapGenEvent$EventType",
-        "net.minecraftforge.event.terraingen.OreGenEvent$GenerateMinable$EventType",
-        "net.minecraftforge.event.terraingen.DecorateBiomeEvent$Decorate$EventType",
-        // From GTNH crashes
-        "vswe.stevesfactory.Localization", "vswe.stevesfactory.blocks.ClusterMethodRegistration",
-        "vswe.stevesfactory.blocks.ConnectionBlockType", "vswe.stevesfactory.components.ComponentType",
-        "vswe.stevesfactory.components.ConnectionSet", "vswe.stevesfactory.components.ConnectionOption",
-        "ic2.core.init.InternalName", "gregtech.api.enums.Element", "gregtech.api.enums.OrePrefixes",
-        "net.minecraft.client.audio.MusicTicker$MusicType", "org.bukkit.Material",
-        "buildcraft.api.transport.IPipeTile.PipeType", "thaumcraft.common.entities.golems.EnumGolemType",
-        // Non-GTNH Mods Compat
-        // The Lord of the Rings Mod: Legacy
-        "net.minecraft.event.HoverEvent$Action",
-        // LotR Addons
-        "lotr.common.fac.LOTRFaction", "lotr.common.quest.LOTRMiniQuestFactory", "lotr.common.world.map.LOTRWaypoint",
-        "lotr.common.world.map.LOTRWaypoint$Region", "lotr.common.world.spawning.LOTRInvasions",
-        "lotr.common.LOTRShields", "lotr.common.LOTRDimension$DimensionRegion",
-        "lotr.common.item.LOTRItemBanner$BannerType", "lotr.common.LOTRAchievement$Category",
-        "lotr.client.gui.LOTRMapLabels",
-        // Reika's mods
-        "net.minecraft.client.audio.SoundCategory",
-        "Reika.RotaryCraft.TileEntities.Processing.TileEntityFuelConverter$Conversions",
-        "Reika.DragonAPI.ModInteract.Bees.BeeAlleleRegistry$Fertility",
-        "Reika.DragonAPI.ModInteract.Bees.BeeAlleleRegistry$Speeds",
-        "Reika.DragonAPI.ModInteract.Bees.BeeAlleleRegistry$Flowering",
-        "Reika.DragonAPI.ModInteract.Bees.BeeAlleleRegistry$Territory",
-        "Reika.DragonAPI.ModInteract.Bees.BeeAlleleRegistry$Life",
-        "Reika.DragonAPI.ModInteract.Bees.ButterflyAlleleRegistry$Fertility",
-        "Reika.DragonAPI.ModInteract.Bees.ButterflyAlleleRegistry$Life",
-        // Et Futurum Requiem
-        "net.minecraft.world.WorldSettings$GameType",
-        "ganymedes01.etfuturum.tileentities.TileEntityBanner$EnumBannerPattern",
-        // EnderIO Addons
-        "crazypants.enderio.ModObject",
-        //
+        "net.minecraft.entity.passive.HorseArmorType",
+        "net.minecraft.entity.EntityLiving$SpawnPlacementType",
+        // Not in EnumHelper but relied on by Forge anyway
+        "net.minecraft.world.DimensionType"
     };
 
     public static final Set<String> EXTENSIBLE_ENUMS = new HashSet<>(Arrays.asList(DEFAULT_EXTENSIBLE_ENUMS));

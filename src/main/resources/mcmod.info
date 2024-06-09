@@ -1,11 +1,11 @@
 {
 	"modListVersion": 2,
 	"modList": [{
-		"modid": "${modId}",
-		"name": "${modName}",
-		"description": "A mod enabling the use of LWJGL3 and modern Java versions for Minecraft 1.7.10",
-		"version": "${modVersion}",
-		"mcversion": "${minecraftVersion}",
+		"modid": "${modid}",
+		"name": "${modname}",
+		"description": "A mod enabling the use of LWJGL3 and modern Java versions for Minecraft 1.12.2",
+		"version": "${version}",
+		"mcversion": "${mcversion}",
 		"url": "https://github.com/GTNewHorizons/lwjgl3ify",
 		"updateUrl": "",
 		"authorList": ["eigenraven"],
