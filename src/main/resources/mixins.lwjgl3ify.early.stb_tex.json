@@ -7,6 +7,6 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "game.MixinTextureAtlasSprite",
-    "game.MixinTextureMap"
+    "game.MixinTextureUtil"
   ]
 }

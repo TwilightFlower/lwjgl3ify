@@ -69,14 +69,14 @@ public class Lwjgl3ifyCoremod implements IFMLLoadingPlugin, IEarlyMixinLoader {
         // STB replacements for vanilla functions
         if (Config.MIXIN_STBI_TEXTURE_LOADING) {
             LOGGER.info("Enabling STB texture loading mixin");
-            //mixins.add("mixins.lwjgl3ify.early.stb_tex.json");
+            mixins.add("mixins.lwjgl3ify.early.stb_tex.json");
         } else {
             LOGGER.info("Disabling STB texture loading mixin");
         }
 
         if (Config.MIXIN_STBI_TEXTURE_STICHING) {
             LOGGER.info("Enabling STB texture stitching mixin");
-            //mixins.add("mixins.lwjgl3ify.early.stb_stitch.json");
+            mixins.add("mixins.lwjgl3ify.early.stb_stitch.json");
         } else {
             LOGGER.info("Disabling STB texture stitching mixin");
         }
