@@ -2,19 +2,8 @@ package me.eigenraven.lwjgl3ify.mixins.fml;
 
 import java.lang.reflect.Field;
 
-import net.minecraft.init.Blocks;
-
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.RegistryNamespaced;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.GameData;
-import net.minecraftforge.registries.IForgeRegistry;
-import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
 
 import com.google.common.base.Throwables;
 

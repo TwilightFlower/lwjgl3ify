@@ -3,9 +3,9 @@ package me.eigenraven.lwjgl3ify.mixins.early.fml;
 import java.lang.reflect.Field;
 
 import net.minecraft.item.ItemStack;
-
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+
 import org.apache.logging.log4j.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;

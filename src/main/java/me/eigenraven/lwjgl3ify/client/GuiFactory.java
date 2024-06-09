@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
 
-
 @SuppressWarnings("unused")
 public class GuiFactory implements IModGuiFactory {
 

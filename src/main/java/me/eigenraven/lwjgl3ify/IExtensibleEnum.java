@@ -3,8 +3,6 @@
  */
 package me.eigenraven.lwjgl3ify;
 
-import java.lang.invoke.MethodHandles;
-
 /**
  * To be implemented on vanilla enums that should be enhanced with ASM to be extensible. If this is implemented on a
  * class, the class must define a static method called "create" which takes a String (enum name), and the rest of the
@@ -22,4 +20,5 @@ import java.lang.invoke.MethodHandles;
  * The method contents will be replaced with ASM at runtime. Multiple {@code create} methods <strong>can</strong> be
  * defined as long as each matches a constructor.
  */
-public interface IExtensibleEnum { }
+public interface IExtensibleEnum {
+}

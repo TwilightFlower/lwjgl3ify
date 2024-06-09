@@ -22,20 +22,18 @@ import me.eigenraven.lwjgl3ify.WasFinalObjectHolder;
 import me.eigenraven.lwjgl3ify.core.Lwjgl3ifyCoremod;
 
 public class UnfinalizeObjectHoldersTransformer implements RfbClassTransformer {
+
     private static final Set<String> HARDCODED_MC_CLASSES = new HashSet<>();
-    final byte[] QUICKSCAN_BYTES = "net/minecraftforge/fml/common/registry/GameRegistry".getBytes(StandardCharsets.UTF_8);
+    final byte[] QUICKSCAN_BYTES = "net/minecraftforge/fml/common/registry/GameRegistry"
+        .getBytes(StandardCharsets.UTF_8);
 
     static {
         // forge hardcodes these
-        HARDCODED_MC_CLASSES.addAll(Arrays.asList(new String[]{
-            "net.minecraft.init.Blocks",
-            "net.minecraft.init.Items",
-            "net.minecraft.init.MobEffects",
-            "net.minecraft.init.Biomes",
-            "net.minecraft.init.Enchantments",
-            "net.minecraft.init.SoundEvents",
-            "net.minecraft.init.PotionTypes"
-        }));
+        HARDCODED_MC_CLASSES.addAll(
+            Arrays.asList(
+                new String[] { "net.minecraft.init.Blocks", "net.minecraft.init.Items", "net.minecraft.init.MobEffects",
+                    "net.minecraft.init.Biomes", "net.minecraft.init.Enchantments", "net.minecraft.init.SoundEvents",
+                    "net.minecraft.init.PotionTypes" }));
     }
 
     @Pattern("[a-z0-9-]+")

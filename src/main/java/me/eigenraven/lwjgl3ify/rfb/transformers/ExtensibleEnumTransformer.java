@@ -3,21 +3,15 @@ package me.eigenraven.lwjgl3ify.rfb.transformers;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.jar.Manifest;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.intellij.lang.annotations.Pattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.InstructionAdapter;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -27,8 +21,6 @@ import com.gtnewhorizons.retrofuturabootstrap.api.ClassNodeHandle;
 import com.gtnewhorizons.retrofuturabootstrap.api.ExtensibleClassLoader;
 import com.gtnewhorizons.retrofuturabootstrap.api.RfbClassTransformer;
 
-import me.eigenraven.lwjgl3ify.IExtensibleEnum;
-import me.eigenraven.lwjgl3ify.api.MakeEnumExtensible;
 import me.eigenraven.lwjgl3ify.rfb.EarlyConfig;
 
 public class ExtensibleEnumTransformer implements RfbClassTransformer {
@@ -66,7 +58,7 @@ public class ExtensibleEnumTransformer implements RfbClassTransformer {
 
         boolean process = false;
 
-        if(classNode.interfaces.contains(MARKER_IFACE.getInternalName())) {
+        if (classNode.interfaces.contains(MARKER_IFACE.getInternalName())) {
             process = true;
         } else if (EarlyConfig.EXTENSIBLE_ENUMS.contains(className)) {
             addInterface(classNode);
@@ -93,7 +85,10 @@ public class ExtensibleEnumTransformer implements RfbClassTransformer {
             .findFirst()
             .orElse(
                 classNode.fields.stream()
-                    .filter(f -> f.desc.contentEquals(array.getDescriptor()) && (f.name.equals("$VALUES") || f.name.equals("ENUM$VALUES"))) // ecj and javac do different things
+                    .filter(
+                        f -> f.desc.contentEquals(array.getDescriptor())
+                            && (f.name.equals("$VALUES") || f.name.equals("ENUM$VALUES"))) // ecj and javac do different
+                                                                                           // things
                     .findFirst()
                     .orElse(null));
 
@@ -102,7 +97,8 @@ public class ExtensibleEnumTransformer implements RfbClassTransformer {
             values.access &= ~Opcodes.ACC_FINAL & ~Opcodes.ACC_PRIVATE;
             values.access |= Opcodes.ACC_PUBLIC;
 
-            values.visitAnnotation(VALUES_MARKER_ANNOTATION.getDescriptor(), true).visitEnd();
+            values.visitAnnotation(VALUES_MARKER_ANNOTATION.getDescriptor(), true)
+                .visitEnd();
         } else {
             if (LOGGER.isErrorEnabled()) {
                 StringBuilder sb = new StringBuilder();

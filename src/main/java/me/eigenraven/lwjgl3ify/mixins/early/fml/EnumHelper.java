@@ -1,27 +1,27 @@
 package me.eigenraven.lwjgl3ify.mixins.fml;
 
-import me.eigenraven.lwjgl3ify.EnumValuesField;
-import me.eigenraven.lwjgl3ify.IExtensibleEnum;
-import me.eigenraven.lwjgl3ify.UnsafeHacks;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
 
-import javax.annotation.Nullable;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import me.eigenraven.lwjgl3ify.EnumValuesField;
+import me.eigenraven.lwjgl3ify.IExtensibleEnum;
+import me.eigenraven.lwjgl3ify.UnsafeHacks;
 
-@Mixin(value = {net.minecraftforge.common.util.EnumHelper.class}, remap = false)
+@Mixin(value = { net.minecraftforge.common.util.EnumHelper.class }, remap = false)
 public class EnumHelper {
+
     @Unique
     private static final Map<MethodType, MethodHandle> ENUM_CONSTRUCTOR_CACHE = new ConcurrentHashMap<>();
     @Unique
@@ -39,7 +39,8 @@ public class EnumHelper {
      * @reason Original reflection logic causes crash
      */
     @Overwrite
-    public static void setFailsafeFieldValue(Field field, @Nullable Object target, @Nullable Object value) throws Exception {
+    public static void setFailsafeFieldValue(Field field, @Nullable Object target, @Nullable Object value)
+        throws Exception {
         UnsafeHacks.setField(field, target, value);
     }
 
@@ -49,9 +50,11 @@ public class EnumHelper {
      */
     @Overwrite
     @SuppressWarnings("unchecked")
-    private static <T extends Enum<?>> T addEnum(boolean test, final Class<T> enumType, @Nullable String enumName, final Class<?>[] paramTypes, @Nullable Object[] paramValues) {
+    private static <T extends Enum<?>> T addEnum(boolean test, final Class<T> enumType, @Nullable String enumName,
+        final Class<?>[] paramTypes, @Nullable Object[] paramValues) {
         if (!IExtensibleEnum.class.isAssignableFrom(enumType)) {
-            throw new RuntimeException("Enum " + enumType.getName() + " was not made extensible, add it to lwjgl3ify configs.");
+            throw new RuntimeException(
+                "Enum " + enumType.getName() + " was not made extensible, add it to lwjgl3ify configs.");
         }
 
         Class<?>[] actualParamTypes = new Class<?>[paramTypes.length + 2];
@@ -60,7 +63,8 @@ public class EnumHelper {
         System.arraycopy(paramTypes, 0, actualParamTypes, 2, paramTypes.length);
         MethodType ctorCacheType = MethodType.methodType(enumType, actualParamTypes);
 
-        MethodHandle constructor = ENUM_CONSTRUCTOR_CACHE.computeIfAbsent(ctorCacheType, EnumHelper::findConstructorHandle);
+        MethodHandle constructor = ENUM_CONSTRUCTOR_CACHE
+            .computeIfAbsent(ctorCacheType, EnumHelper::findConstructorHandle);
         Field valuesField = ENUM_VALUES_FIELD_CACHE.computeIfAbsent(enumType, EnumHelper::findValuesField);
 
         // i don't know why this exists
@@ -75,7 +79,7 @@ public class EnumHelper {
                 System.arraycopy(paramValues, 0, actualParams, 2, paramValues.length);
             }
 
-            synchronized(enumType) {
+            synchronized (enumType) {
                 T[] values = (T[]) valuesField.get(null);
                 actualParams[1] = values.length;
                 T newValue = (T) constructor.invokeWithArguments(actualParams);
@@ -94,9 +98,12 @@ public class EnumHelper {
         MethodType ctorType = cacheType.changeReturnType(void.class);
 
         try {
-            return MethodHandles.publicLookup().findConstructor(on, ctorType);
+            return MethodHandles.publicLookup()
+                .findConstructor(on, ctorType);
         } catch (NoSuchMethodException | IllegalAccessException e) {
-            throw new RuntimeException(String.format("Error getting constructor with type %s for enum %s", ctorType, on.getName()), e);
+            throw new RuntimeException(
+                String.format("Error getting constructor with type %s for enum %s", ctorType, on.getName()),
+                e);
         }
     }
 

@@ -6,8 +6,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraftforge.common.config.ConfigElement;
-
 import net.minecraftforge.fml.client.config.GuiConfig;
+
 import org.lwjglx.input.Mouse;
 
 import com.google.common.collect.Lists;
@@ -50,7 +50,9 @@ public class GuiConfigLwjgl3ify extends GuiConfig {
         Minecraft.getMinecraft()
             .getTextureManager()
             .bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        TextureAtlasSprite wool = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/wool");
+        TextureAtlasSprite wool = Minecraft.getMinecraft()
+            .getTextureMapBlocks()
+            .getAtlasSprite("minecraft:blocks/wool");
         for (int i = 0; i < 8; i++) {
             while (ypos > height - 64) {
                 ypos -= (height - 64);

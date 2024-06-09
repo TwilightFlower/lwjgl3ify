@@ -1,18 +1,15 @@
 package me.eigenraven.lwjgl3ify.core;
 
-import java.security.MessageDigest;
 import java.util.*;
 
-import com.google.common.collect.Lists;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import zone.rong.mixinbooter.IEarlyMixinLoader;
 
+import zone.rong.mixinbooter.IEarlyMixinLoader;
 
 @IFMLLoadingPlugin.MCVersion("1.12.2")
 @IFMLLoadingPlugin.SortingIndex(Integer.MAX_VALUE - 2)
