@@ -5,14 +5,18 @@ import java.util.zip.ZipEntry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 
-@Mixin(value = { cpw.mods.fml.common.discovery.JarDiscoverer.class }, remap = false)
+@Mixin(value = { net.minecraftforge.fml.common.discovery.JarDiscoverer.class }, remap = false)
 public class JarDiscoverer {
 
     @Redirect(
         method = {
-            "Lcpw/mods/fml/common/discovery/JarDiscoverer;discover(Lcpw/mods/fml/common/discovery/ModCandidate;Lcpw/mods/fml/common/discovery/ASMDataTable;)Ljava/util/List;" },
-        at = @At(ordinal = 1, value = "INVOKE", target = "Ljava/util/zip/ZipEntry;getName()Ljava/lang/String;"),
+            "Lnet/minecraftforge/fml/common/discovery/JarDiscoverer;findClassesASM(Lnet/minecraftforge/fml/common/discovery/ModCandidate;Lnet/minecraftforge/fml/common/discovery/ASMDataTable;Ljava/util/jar/JarFile;Ljava/util/List;Lnet/minecraftforge/fml/common/MetadataCollection;)V",
+            "Lnet/minecraftforge/fml/common/discovery/JarDiscoverer;findClassesJSON(Lnet/minecraftforge/fml/common/discovery/ModCandidate;Lnet/minecraftforge/fml/common/discovery/ASMDataTable;Ljava/util/jar/JarFile;Ljava/util/List;Lnet/minecraftforge/fml/common/MetadataCollection;)V"
+        },
+        // target based on the string constant to ensure we're hitting the right one in both methods
+        at = @At(ordinal = 0, value = "CONSTANT", args = {"stringValue=__MACOSX"}, shift = At.Shift.BEFORE),
         remap = false,
         require = 1)
     public String getZipEntryName(ZipEntry ze) {

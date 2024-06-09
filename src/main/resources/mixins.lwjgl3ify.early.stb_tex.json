@@ -5,14 +5,8 @@
   "refmap": "mixins.lwjgl3ify.refmap.json",
   "target": "@env(DEFAULT)",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "fml.EnumHelper",
-    "fml.ItemStackHolderRef",
-    "fml.JarDiscoverer",
-    "fml.ObjectHolderRef",
-    "fml.ObjectHolderRegistry"
-  ],
   "client": [
-    "game.MixinMinecraftKeyBinding"
+    "game.MixinTextureAtlasSprite",
+    "game.MixinTextureMap"
   ]
 }

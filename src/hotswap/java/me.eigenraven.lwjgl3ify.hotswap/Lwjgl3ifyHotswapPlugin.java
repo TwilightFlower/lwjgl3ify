@@ -11,8 +11,8 @@ import org.hotswap.agent.logging.AgentLogger;
 @Plugin(
     name = "Lwjgl3ifyHSA",
     description = "Runs LaunchWrapper transformers as needed for reloaded classes.",
-    testedVersions = "1.7.10",
-    expectedVersions = "1.7.10")
+    testedVersions = "1.12.2",
+    expectedVersions = "1.12.2")
 public class Lwjgl3ifyHotswapPlugin {
 
     public static final String PLUGIN_PACKAGE = "me.eigenraven.lwjgl3ify.hotswap";

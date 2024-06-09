@@ -153,7 +153,7 @@ public class Downloader {
             final JsonObject elClientDownload = versionRoot.getAsJsonObject()
                 .getAsJsonObject("downloads")
                 .getAsJsonObject("client");
-            addArtifactDownload("net.minecraft:client:1.7.10", elClientDownload, tasks);
+            addArtifactDownload("net.minecraft:client:1.12.2", elClientDownload, tasks);
 
             for (Iterator<DownloadTask> it = tasks.iterator(); it.hasNext();) {
                 final DownloadTask task = it.next();

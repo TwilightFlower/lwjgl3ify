@@ -4,13 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import org.lwjglx.input.Keyboard;
 import org.lwjglx.opengl.Display;
 
-import cpw.mods.fml.client.event.ConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import me.eigenraven.lwjgl3ify.CommonProxy;
 import me.eigenraven.lwjgl3ify.api.InputEvents;
 import me.eigenraven.lwjgl3ify.core.Config;
@@ -37,8 +36,7 @@ public class ClientProxy extends CommonProxy {
         // Populate keyboard-layout-dependent key lookup tables
         Keyboard.populateKeyLookupTables();
         registerKeybindHandler();
-        FMLCommonHandler.instance()
-            .bus()
+        MinecraftForge.EVENT_BUS
             .register(this);
     }
 
@@ -75,12 +73,12 @@ public class ClientProxy extends CommonProxy {
     @SuppressWarnings("unused") // event handler
     public void onRenderGameOverlayTextEvent(RenderGameOverlayEvent.Text event) {
         if (Minecraft.getMinecraft().gameSettings.showDebugInfo
-            && event.type == RenderGameOverlayEvent.ElementType.TEXT) {
+            && event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
             if (Config.SHOW_LWJGL_VERSION) {
-                event.right.add(Math.min(3, event.right.size()), lwjglVersion);
+                event.getRight().add(Math.min(3, event.getRight().size()), lwjglVersion);
             }
             if (Config.SHOW_JAVA_VERSION) {
-                event.right.add(Math.min(3, event.right.size()), javaVersion);
+                event.getRight().add(Math.min(3, event.getRight().size()), javaVersion);
             }
         }
     }
@@ -88,7 +86,7 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     @SuppressWarnings("unused") // event handler
     public void onConfigChange(final ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (!event.modID.equals("lwjgl3ify")) {
+        if (!event.getModID().equals("lwjgl3ify")) {
             return;
         }
         Config.config.save();

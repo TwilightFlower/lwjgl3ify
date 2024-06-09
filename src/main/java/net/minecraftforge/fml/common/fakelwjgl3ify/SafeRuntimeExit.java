@@ -1,4 +1,4 @@
-package cpw.mods.fml.common.fakelwjgl3ify;
+package net.minecraftforge.fml.common.fakelwjgl3ify;
 
 /** Safe runtime exit class to not trip the FML security manager. */
 public class SafeRuntimeExit {

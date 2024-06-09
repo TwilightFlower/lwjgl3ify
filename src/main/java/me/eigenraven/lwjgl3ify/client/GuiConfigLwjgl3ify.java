@@ -1,18 +1,17 @@
 package me.eigenraven.lwjgl3ify.client;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.init.Blocks;
 import net.minecraftforge.common.config.ConfigElement;
 
+import net.minecraftforge.fml.client.config.GuiConfig;
 import org.lwjglx.input.Mouse;
 
 import com.google.common.collect.Lists;
 
-import cpw.mods.fml.client.config.GuiConfig;
 import me.eigenraven.lwjgl3ify.core.Config;
 
 @SuppressWarnings("unused")
@@ -22,9 +21,9 @@ public class GuiConfigLwjgl3ify extends GuiConfig {
         super(
             parent,
             Lists.newArrayList(
-                new ConfigElement<>(Config.config.getCategory(Config.CATEGORY_WINDOW)),
-                new ConfigElement<>(Config.config.getCategory(Config.CATEGORY_INPUT)),
-                new ConfigElement<>(Config.config.getCategory(Config.CATEGORY_GLCONTEXT))),
+                new ConfigElement(Config.config.getCategory(Config.CATEGORY_WINDOW)),
+                new ConfigElement(Config.config.getCategory(Config.CATEGORY_INPUT)),
+                new ConfigElement(Config.config.getCategory(Config.CATEGORY_GLCONTEXT))),
             "lwjgl3ify",
             "config",
             false,
@@ -46,12 +45,12 @@ public class GuiConfigLwjgl3ify extends GuiConfig {
             Config.reloadConfigObject();
         }
 
-        Block wool = Blocks.wool;
         // Draw scroll test widget
         int ypos = 32 + (int) (16.0 * Mouse.totalScrollAmount);
         Minecraft.getMinecraft()
             .getTextureManager()
-            .bindTexture(TextureMap.locationBlocksTexture);
+            .bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        TextureAtlasSprite wool = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite("minecraft:blocks/wool");
         for (int i = 0; i < 8; i++) {
             while (ypos > height - 64) {
                 ypos -= (height - 64);
@@ -59,7 +58,7 @@ public class GuiConfigLwjgl3ify extends GuiConfig {
             while (ypos < 32) {
                 ypos += (height - 64);
             }
-            drawTexturedModelRectFromIcon(16, ypos, wool.getIcon(0, i), 16, 16);
+            this.drawTexturedModalRect(16, ypos, wool, 16, 16);
             ypos += 16;
         }
     }

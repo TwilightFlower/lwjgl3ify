@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.launchwrapper.Launch;
 
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -29,8 +30,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.fakelwjgl3ify.SafeRuntimeExit;
+import net.minecraftforge.fml.common.fakelwjgl3ify.SafeRuntimeExit;
 import me.eigenraven.lwjgl3ify.Tags;
 
 public class Relauncher {
@@ -225,7 +225,7 @@ public class Relauncher {
                 "--assetsDir",
                 Launch.assetsDir.toString(),
                 "--tweakClass",
-                "cpw.mods.fml.common.launcher.FMLTweaker"));
+                "net.minecraftforge.fml.common.launcher.FMLTweaker"));
         cmd.addAll(Arrays.asList(args));
 
         final Path argFile = Files.createTempFile("lwjgl3ify-relaunch-", ".arg");
