@@ -2,8 +2,6 @@ package me.eigenraven.lwjgl3ify.rfb.transformers;
 
 import static org.objectweb.asm.Opcodes.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.jar.Manifest;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,8 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.InstructionAdapter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;

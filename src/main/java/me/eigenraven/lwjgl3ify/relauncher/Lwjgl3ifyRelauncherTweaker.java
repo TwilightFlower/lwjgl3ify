@@ -11,12 +11,12 @@ import java.util.List;
 import net.minecraft.launchwrapper.ITweaker;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
+
 import org.apache.logging.log4j.LogManager;
 
 public class Lwjgl3ifyRelauncherTweaker implements ITweaker {
@@ -52,8 +52,7 @@ public class Lwjgl3ifyRelauncherTweaker implements ITweaker {
             final String coreModName = myFile.getName();
             boolean isReparseable = !System.getProperty("java.class.path")
                 .contains(coreModName);
-            FMLLog.log
-                .info("Lwjgl3ify reparseable status: {} (name: {})", isReparseable, coreModName);
+            FMLLog.log.info("Lwjgl3ify reparseable status: {} (name: {})", isReparseable, coreModName);
             // If this tweaker is loaded, FML skips loading the coremod by default.
             Launch.classLoader.addTransformerExclusion("me.eigenraven.lwjgl3ify.core.Lwjgl3ifyCoremod");
             final Class<CoreModManager> cmmClass = (Class<CoreModManager>) Class

@@ -2,11 +2,11 @@ package me.eigenraven.lwjgl3ify.core;
 
 import java.awt.Toolkit;
 
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+
 import org.lwjgl.system.Configuration;
 import org.lwjgl.system.Platform;
 import org.lwjglx.Sys;
-
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 
 public class LateInit {
 

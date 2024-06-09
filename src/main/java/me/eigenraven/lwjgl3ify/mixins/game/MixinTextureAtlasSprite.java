@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.data.AnimationMetadataSection;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,10 +20,8 @@ public class MixinTextureAtlasSprite {
             value = "INVOKE",
             target = "Ljava/awt/image/BufferedImage;getRGB(IIII[III)[I",
             remap = false,
-            shift = At.Shift.AFTER
-        ),
-        locals = LocalCapture.CAPTURE_FAILHARD
-    )
+            shift = At.Shift.AFTER),
+        locals = LocalCapture.CAPTURE_FAILHARD)
     void cleanupNativeBackedImage(IResource resource, int mipmapLevels, CallbackInfo info, BufferedImage image) {
         if (image instanceof AutoCloseable) {
             try {

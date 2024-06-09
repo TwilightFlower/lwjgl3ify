@@ -2,9 +2,9 @@ package me.eigenraven.lwjgl3ify.textures;
 
 import net.minecraft.client.renderer.StitcherException;
 import net.minecraft.client.renderer.texture.Stitcher;
-
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.ProgressManager;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.stb.STBRPContext;
 import org.lwjgl.stb.STBRPNode;

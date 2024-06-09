@@ -36,8 +36,7 @@ public class ClientProxy extends CommonProxy {
         // Populate keyboard-layout-dependent key lookup tables
         Keyboard.populateKeyLookupTables();
         registerKeybindHandler();
-        MinecraftForge.EVENT_BUS
-            .register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     private static final class McKeybindHandler implements InputEvents.KeyboardListener {
@@ -75,10 +74,22 @@ public class ClientProxy extends CommonProxy {
         if (Minecraft.getMinecraft().gameSettings.showDebugInfo
             && event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
             if (Config.SHOW_LWJGL_VERSION) {
-                event.getRight().add(Math.min(3, event.getRight().size()), lwjglVersion);
+                event.getRight()
+                    .add(
+                        Math.min(
+                            3,
+                            event.getRight()
+                                .size()),
+                        lwjglVersion);
             }
             if (Config.SHOW_JAVA_VERSION) {
-                event.getRight().add(Math.min(3, event.getRight().size()), javaVersion);
+                event.getRight()
+                    .add(
+                        Math.min(
+                            3,
+                            event.getRight()
+                                .size()),
+                        javaVersion);
             }
         }
     }
@@ -86,7 +97,8 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     @SuppressWarnings("unused") // event handler
     public void onConfigChange(final ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (!event.getModID().equals("lwjgl3ify")) {
+        if (!event.getModID()
+            .equals("lwjgl3ify")) {
             return;
         }
         Config.config.save();

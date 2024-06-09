@@ -16,24 +16,17 @@ public class EarlyConfig {
 
     public static final String[] DEFAULT_EXTENSIBLE_ENUMS = new String[] {
         // From EnumHelper
-        "net.minecraft.item.EnumAction",
-        "net.minecraft.item.ItemArmor$ArmorMaterial",
-        "net.minecraft.entity.item.EntityPainting$EnumArt",
-        "net.minecraft.entity.EnumCreatureAttribute",
+        "net.minecraft.item.EnumAction", "net.minecraft.item.ItemArmor$ArmorMaterial",
+        "net.minecraft.entity.item.EntityPainting$EnumArt", "net.minecraft.entity.EnumCreatureAttribute",
         "net.minecraft.entity.EnumCreatureType",
         "net.minecraft.world.gen.structure.StructureStrongholdPieces$Stronghold$Door",
-        "net.minecraft.enchantment.EnumEnchantmentType",
-        "net.minecraft.block.BlockPressurePlate$Sensitivity",
-        "net.minecraft.util.math.RayTraceResult$Type",
-        "net.minecraft.world.EnumSkyBlock",
-        "net.minecraft.entity.player.EntityPlayer$SleepResult",
-        "net.minecraft.item.Item$ToolMaterial",
-        "net.minecraft.item.EnumRarity",
-        "net.minecraft.entity.passive.HorseArmorType",
+        "net.minecraft.enchantment.EnumEnchantmentType", "net.minecraft.block.BlockPressurePlate$Sensitivity",
+        "net.minecraft.util.math.RayTraceResult$Type", "net.minecraft.world.EnumSkyBlock",
+        "net.minecraft.entity.player.EntityPlayer$SleepResult", "net.minecraft.item.Item$ToolMaterial",
+        "net.minecraft.item.EnumRarity", "net.minecraft.entity.passive.HorseArmorType",
         "net.minecraft.entity.EntityLiving$SpawnPlacementType",
         // Not in EnumHelper but relied on by Forge anyway
-        "net.minecraft.world.DimensionType"
-    };
+        "net.minecraft.world.DimensionType" };
 
     public static final Set<String> EXTENSIBLE_ENUMS = new HashSet<>(Arrays.asList(DEFAULT_EXTENSIBLE_ENUMS));
 

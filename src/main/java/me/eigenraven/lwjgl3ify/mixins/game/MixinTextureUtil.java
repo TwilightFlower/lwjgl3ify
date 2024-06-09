@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import net.minecraft.client.renderer.texture.TextureUtil;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;

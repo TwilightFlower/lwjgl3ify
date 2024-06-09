@@ -20,8 +20,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.minecraft.launchwrapper.Launch;
-
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.fakelwjgl3ify.SafeRuntimeExit;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -30,7 +31,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.fml.common.fakelwjgl3ify.SafeRuntimeExit;
 import me.eigenraven.lwjgl3ify.Tags;
 
 public class Relauncher {
