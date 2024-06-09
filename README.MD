@@ -51,7 +51,7 @@ java -Xmx6G -Xms6G @java9args.txt -jar lwjgl3ify-forgePatches.jar nogui
 
 # How does it work?
 
-There are a few components to enabling modern java and lwjgl usage on old minecraft versions, lwjgl3ify implements these for 1.7.10 specifically:
+There are a few components to enabling modern java and lwjgl usage on old minecraft versions, lwjgl3ify implements these for 1.12.2 specifically:
 
  - A modified launcher profile (templates are in `prism-libraries`) to modify the library list loaded into the java classpath - to install LWJGL3, and our forgePatches jar that includes libraries such as ASM 9 or new Apache Commons.
  - A custom server launcher jar with the modified `Class-Path` META-INF manifest entry (integrated into our forgePatches jar)
@@ -156,5 +156,5 @@ This can lead to inconsistent states, where some methods might see the old value
 
 ### Development
 
-First, do `./gradlew build` and use the zip in `./build/distributions/lwjgl3ify-VERSION-multimc.zip` to install lwjgl3ify into a 1.7.10 forge instance in Prism.
+First, do `./gradlew build` and use the zip in `./build/distributions/lwjgl3ify-VERSION-multimc.zip` to install lwjgl3ify into a 1.12.2 forge instance in Prism.
 Install the mod jar from `./build/libs/` as usual.
