@@ -261,12 +261,14 @@ afterEvaluate {
 
     pluginManager.withPlugin("net.darkhax.curseforgegradle") {
         tasks.curseforge {
-            dependsOn(forgePatchesJar)
-            def mainArtifact = this.uploadArtifacts[0]
-            mainArtifact.withAdditionalFile(forgePatchesJar.get().archiveFile.get().asFile)
-            mainArtifact.additionalArtifacts.forEach { additionalArtifact ->
-                additionalArtifact.changelogType = mainArtifact.changelogType
-                additionalArtifact.changelog = mainArtifact.changelog
+            doFirst {
+                dependsOn(forgePatchesJar)
+                def mainArtifact = uploadArtifacts[0]
+                mainArtifact.withAdditionalFile(forgePatchesJar.get().archiveFile.get().asFile)
+                mainArtifact.additionalArtifacts.forEach { additionalArtifact ->
+                    additionalArtifact.changelogType = mainArtifact.changelogType
+                    additionalArtifact.changelog = mainArtifact.changelog
+                }
             }
         }
     }
