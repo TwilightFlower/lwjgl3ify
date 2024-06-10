@@ -1,3 +1,4 @@
+// Breaking the auto updater because I need to change some curseforge stuff
 //version: 1707682661
 /*
  * DO NOT CHANGE THIS FILE!
@@ -945,43 +946,49 @@ if (cfApiKey.isPresent() || deploymentDebug.toBoolean()) {
         debugMode = deploymentDebug.toBoolean()
         apiToken = cfApiKey.getOrElse('debug_token')
 
+        def mainFile = upload(curseForgeProjectId, reobfJar)
+
+        mainFile.displayName = versionDisplayFormat.replace('$MOD_NAME', modName).replace('$VERSION', modVersion)
+        mainFile.releaseType = getReleaseType()
+        mainFile.changelogType = 'markdown'
+        mainFile.addModLoader 'Forge'
+        mainFile.addJavaVersion "Java 8"
+        mainFile.addGameVersion minecraftVersion
+
+        if (curseForgeRelations.size() != 0) {
+            String[] deps = curseForgeRelations.split(';')
+            deps.each { dep ->
+                if (dep.size() == 0) {
+                    return
+                }
+                String[] parts = dep.split(':')
+                String type = parts[0], slug = parts[1]
+                def types = [
+                    'req'   : 'requiredDependency', 'required': 'requiredDependency',
+                    'opt'   : 'optionalDependency', 'optional': 'optionalDependency',
+                    'embed' : 'embeddedLibrary',    'embedded': 'embeddedLibrary',
+                    'incomp': 'incompatible',       'fail'    : 'incompatible']
+                if (types.containsKey(type)) type = types[type]
+                if (!(type in ['requiredDependency', 'embeddedLibrary', 'optionalDependency', 'tool', 'incompatible'])) {
+                    throw new Exception('Invalid Curseforge dependency type: ' + type)
+                }
+                mainFile.addRelation(slug, type)
+            }
+        }
+
+        for (artifact in getSecondaryArtifacts()) {
+            mainFile.withAdditionalFile(artifact)
+        }
+
         doFirst {
-            def mainFile = upload(curseForgeProjectId, reobfJar)
             def changelogFile = getChangelog()
             def changelogRaw = changelogFile.exists() ? changelogFile.getText('UTF-8') : ""
 
-            mainFile.displayName = versionDisplayFormat.replace('$MOD_NAME', modName).replace('$VERSION', modVersion)
-            mainFile.releaseType = getReleaseType()
             mainFile.changelog = changelogRaw
             mainFile.changelogType = 'markdown'
-            mainFile.addModLoader 'Forge'
-            mainFile.addJavaVersion "Java 8"
-            mainFile.addGameVersion minecraftVersion
 
-            if (curseForgeRelations.size() != 0) {
-                String[] deps = curseForgeRelations.split(';')
-                deps.each { dep ->
-                    if (dep.size() == 0) {
-                        return
-                    }
-                    String[] parts = dep.split(':')
-                    String type = parts[0], slug = parts[1]
-                    def types = [
-                            'req'   : 'requiredDependency', 'required': 'requiredDependency',
-                            'opt'   : 'optionalDependency', 'optional': 'optionalDependency',
-                            'embed' : 'embeddedLibrary',    'embedded': 'embeddedLibrary',
-                            'incomp': 'incompatible',       'fail'    : 'incompatible']
-                    if (types.containsKey(type)) type = types[type]
-                    if (!(type in ['requiredDependency', 'embeddedLibrary', 'optionalDependency', 'tool', 'incompatible'])) {
-                        throw new Exception('Invalid Curseforge dependency type: ' + type)
-                    }
-                    mainFile.addRelation(slug, type)
-                }
-            }
-
-            for (artifact in getSecondaryArtifacts()) {
-                def additionalFile = mainFile.withAdditionalFile(artifact)
-                additionalFile.changelog = changelogRaw
+            for (artifact in mainFile.additionalArtifacts) {
+                artifact.changelog = changelogRaw
             }
         }
     }
