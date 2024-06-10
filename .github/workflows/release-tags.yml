@@ -15,7 +15,7 @@ jobs:
       VERSION: ${{ github.ref_name }}
       RELEASE_VERSION: ${{ github.ref_name }}
       SNAPSHOT: ${{ contains(github.ref_name, 'snapshot') || contains(github.event.head_commit.message, '[snapshot]') }}
-      MAVEN_PUBLISHING_URL: ${{ vars.MAVEN_PUBLISHING_URL || 'https://nexus.gtnewhorizons.com/repository/releases/' }}
+      MAVEN_PUBLISHING_URL: ${{ vars.MAVEN_PUBLISHING_URL || 'https://maven.gtceu.com/' }}
     steps:
       - name: Checkout mod repo
         uses: actions/checkout@v4
@@ -28,9 +28,7 @@ jobs:
       - name: Set up JDK 8 and 17
         uses: actions/setup-java@v4
         with:
-          java-version: |
-            8
-            17
+          java-version: 17
           distribution: 'zulu'
           cache: gradle
 
