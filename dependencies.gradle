@@ -35,11 +35,12 @@ dependencies {
     hotswapCompileOnly("org.hotswapagent:hotswap-agent-core:1.4.1")
     hotswapCompileOnly("com.gtnewhorizons.retrofuturabootstrap:RetroFuturaBootstrap:${rfbVersion}")
 
-    forgePatchesEmbedded("org.ow2.asm:asm:${asmVersion}")
-    forgePatchesEmbedded("org.ow2.asm:asm-commons:${asmVersion}")
-    forgePatchesEmbedded("org.ow2.asm:asm-tree:${asmVersion}")
-    forgePatchesEmbedded("org.ow2.asm:asm-analysis:${asmVersion}")
-    forgePatchesEmbedded("org.ow2.asm:asm-util:${asmVersion}")
+    forgePatchesEmbeddedRecompile("org.ow2.asm:asm:${asmVersion}")
+    forgePatchesEmbeddedRecompile("org.ow2.asm:asm-commons:${asmVersion}")
+    forgePatchesEmbeddedRecompile("org.ow2.asm:asm-tree:${asmVersion}")
+    forgePatchesEmbeddedRecompile("org.ow2.asm:asm-analysis:${asmVersion}")
+    forgePatchesEmbeddedRecompile("org.ow2.asm:asm-util:${asmVersion}")
+
     forgePatchesEmbedded("org.apache.commons:commons-lang3:3.14.0")
     forgePatchesEmbedded("org.apache.commons:commons-compress:1.26.0")
     forgePatchesEmbedded("commons-io:commons-io:2.15.1")

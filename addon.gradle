@@ -47,19 +47,27 @@ minecraft {
     injectedTags.put("RECOMMENDED_JAVA_ARGS", extraJavaArgs.stream().collect(Collectors.joining("\t")))
 }
 
+Configuration forgePatchesEmbeddedRecompile;
 Configuration forgePatchesEmbedded;
 Configuration versionJsonElements;
 
 configurations {
+    forgePatchesEmbeddedRecompile = create("forgePatchesEmbeddedRecompile") {
+        canBeConsumed = false
+        canBeResolved = true
+    }
     forgePatchesEmbedded = create("forgePatchesEmbedded") {
         canBeConsumed = false
         canBeResolved = true
+        extendsFrom(forgePatchesEmbeddedRecompile)
     }
     versionJsonElements = create("versionJsonElements") {
         canBeConsumed = false
         canBeResolved = false
     }
-    patchedMinecraft { extendsFrom(forgePatchesEmbedded) }
+    patchedMinecraft { extendsFrom(forgePatchesEmbeddedRecompile) }
+    compileClasspath { extendsFrom(forgePatchesEmbedded) }
+    runtimeClasspath { extendsFrom(forgePatchesEmbedded) }
     shadowImplementation
 }
 
