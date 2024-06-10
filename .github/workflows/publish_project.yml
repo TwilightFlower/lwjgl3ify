@@ -4,7 +4,7 @@ name: Publish Project
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+' # any SemVer tag, e.g. v1.2.3
+      - '[0-9]+.[0-9]+.[0-9]+' # any SemVer tag, e.g. v1.2.3
 
 env:
   # link to the changelog with a format code for the version
