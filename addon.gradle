@@ -18,9 +18,11 @@ def addOpens = [
     "java.base/java.nio=ALL-UNNAMED",
     "java.base/java.io=ALL-UNNAMED",
     "java.base/java.lang=ALL-UNNAMED",
+    "java.base/java.lang.invoke=ALL-UNNAMED",
     "java.base/java.lang.ref=ALL-UNNAMED",
     "java.base/java.util.concurrent.locks=ALL-UNNAMED",
     "java.base/java.lang.reflect=ALL-UNNAMED",
+    "java.base/java.security=ALL-UNNAMED",
     "java.base/java.text=ALL-UNNAMED",
     "java.base/java.util=ALL-UNNAMED",
     "java.base/jdk.internal.reflect=ALL-UNNAMED",
@@ -139,6 +141,7 @@ def forgePatchesJar = tasks.register('forgePatchesJar', Jar) {
         def libraryList = [
             "libraries/com/typesafe/akka/akka-actor_2.11/2.3.3/akka-actor_2.11-2.3.3.jar",
             "libraries/com/typesafe/config/1.2.1/config-1.2.1.jar",
+            "libraries/org/jline/jline/3.5.1/jline-3.5.1.jar",
             "libraries/org/scala-lang/scala-actors-migration_2.11/1.1.0/scala-actors-migration_2.11-1.1.0.jar",
             "libraries/org/scala-lang/scala-compiler/2.11.1/scala-compiler-2.11.1.jar",
             "libraries/org/scala-lang/plugins/scala-continuations-library_2.11/1.0.2/scala-continuations-library_2.11-1.0.2.jar",
@@ -149,9 +152,13 @@ def forgePatchesJar = tasks.register('forgePatchesJar', Jar) {
             "libraries/org/scala-lang/scala-swing_2.11/1.0.1/scala-swing_2.11-1.0.1.jar",
             "libraries/org/scala-lang/scala-xml_2.11/1.0.2/scala-xml_2.11-1.0.2.jar",
             "libraries/lzma/lzma/0.0.1/lzma-0.0.1.jar",
-            "libraries/net/sf/jopt-simple/jopt-simple/4.5/jopt-simple-4.5.jar",
-            "libraries/com/google/guava/guava/17.0/guava-17.0.jar",
-            "forge-1.12.2-14.23.5.2860-1.12.2-universal.jar",
+            "libraries/java3d/vecmath/1.5.2/vecmath-1.5.2.jar",
+            "libraries/net/sf/trove4j/trove4j/3.0.3/trove4j-3.0.3.jar",
+            "libraries/org/apache/maven/maven-artifact/3.5.3/maven-artifact-3.5.3.jar",
+            "libraries/net/sf/jopt-simple/jopt-simple/5.0.3/jopt-simple-5.0.3.jar",
+            "libraries/org/apache/logging/log4j/log4j-api/2.15.0/log4j-api-2.15.0.jar",
+            "libraries/org/apache/logging/log4j/log4j-core/2.15.0/log4j-core-2.15.0.jar",
+            "forge-1.12.2-14.23.5.2860.jar",
             "minecraft_server.1.12.2.jar"
         ]
         attributes(

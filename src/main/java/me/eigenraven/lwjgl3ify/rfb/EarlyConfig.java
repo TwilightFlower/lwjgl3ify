@@ -26,7 +26,10 @@ public class EarlyConfig {
         "net.minecraft.item.EnumRarity", "net.minecraft.entity.passive.HorseArmorType",
         "net.minecraft.entity.EntityLiving$SpawnPlacementType",
         // Not in EnumHelper but relied on by Forge anyway
-        "net.minecraft.world.DimensionType" };
+        "net.minecraft.world.DimensionType",
+
+        // GTCEu
+        "net.minecraft.util.BlockRenderLayer", "net.minecraft.util.EnumBlockRenderType" };
 
     public static final Set<String> EXTENSIBLE_ENUMS = new HashSet<>(Arrays.asList(DEFAULT_EXTENSIBLE_ENUMS));
 
