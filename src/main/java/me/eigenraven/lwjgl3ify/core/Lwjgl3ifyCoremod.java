@@ -66,7 +66,7 @@ public class Lwjgl3ifyCoremod implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
         // Check if VintageFix is loaded
         try {
-            Launch.classLoader.findClass("org.embeddedt.vintagefix.VintageFix");
+            Launch.classLoader.findClass("org.embeddedt.vintagefix.core.VintageFixCore");
         } catch (ClassNotFoundException e) {
             // STB replacements for vanilla functions
             if (Config.MIXIN_STBI_TEXTURE_LOADING) {
