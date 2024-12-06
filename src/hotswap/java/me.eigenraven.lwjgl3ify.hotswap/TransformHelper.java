@@ -63,6 +63,15 @@ public class TransformHelper {
 
 
 
+        classBytes = loader.runRfbTransformers(
+            Main.getRfbTransformers(),
+            RfbClassTransformer.Context.LCL_WITH_TRANSFORMS,
+            null,
+            name,
+            classBytes);
+
+
+
         return classBytes;
     }
 }
