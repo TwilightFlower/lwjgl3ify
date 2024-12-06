@@ -15,7 +15,6 @@ public class Config {
 
     public static boolean MIXIN_STBI_TEXTURE_LOADING = true;
     public static boolean MIXIN_STBI_TEXTURE_STITCHING = true;
-    public static boolean MIXIN_STBI_IGNORE_FASTCRAFT = false;
 
     public static boolean DEBUG_PRINT_KEY_EVENTS = false;
     public static boolean DEBUG_PRINT_MOUSE_EVENTS = false;
@@ -83,17 +82,12 @@ public class Config {
             "stbiTextureLoading",
             CATEGORY_MIXIN,
             MIXIN_STBI_TEXTURE_LOADING,
-            "Use the faster stb_image-based texture loader");
+            "Use the faster stb_image-based texture loader. Disabled regardless of config if VintageFix is loaded");
         MIXIN_STBI_TEXTURE_STITCHING = config.getBoolean(
             "stbiTextureStitching",
             CATEGORY_MIXIN,
             MIXIN_STBI_TEXTURE_STITCHING,
-            "Use the much faster stb_rectpack-based texture stitcher");
-        MIXIN_STBI_IGNORE_FASTCRAFT = config.getBoolean(
-            "stbiIgnoreFastcraft",
-            CATEGORY_MIXIN,
-            MIXIN_STBI_IGNORE_FASTCRAFT,
-            "Force-enable the STB mixins even if FastCraft is present, may lead to a rapidly flashing screen and other visual artifacts");
+            "Use the much faster stb_rectpack-based texture stitcher. Disabled regardless of config if VintageFix is loaded");
 
         DEBUG_PRINT_KEY_EVENTS = config.getBoolean(
             "printKeyEvents",
