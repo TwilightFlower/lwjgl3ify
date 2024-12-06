@@ -9,12 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 import com.gtnewhorizons.retrofuturabootstrap.api.ClassNodeHandle;
 import com.gtnewhorizons.retrofuturabootstrap.api.ExtensibleClassLoader;
@@ -29,10 +24,12 @@ public class ForgePatchTransformer implements RfbClassTransformer {
         return "forge-patch";
     }
 
+    public static final String CLASS_PATCH_MANAGER = "net.minecraftforge.fml.common.patcher.ClassPatchManager";
     public static final String TRACING_PRINT_STREAM = "net.minecraftforge.fml.common.TracingPrintStream";
     public static final String FML_SECURITY_MANAGER = "net.minecraftforge.fml.relauncher.FMLSecurityManager";
 
-    public static final String[] PATCHED_CLASSES = new String[] { TRACING_PRINT_STREAM, FML_SECURITY_MANAGER };
+    public static final String[] PATCHED_CLASSES = new String[] { CLASS_PATCH_MANAGER, TRACING_PRINT_STREAM,
+        FML_SECURITY_MANAGER };
 
     @Override
     public boolean shouldTransformClass(@NotNull ExtensibleClassLoader classLoader,
@@ -53,6 +50,7 @@ public class ForgePatchTransformer implements RfbClassTransformer {
             return;
         }
         switch (className) {
+            case CLASS_PATCH_MANAGER -> tfClassPatchManager(classNode);
             case TRACING_PRINT_STREAM -> tfTracingPrintStream(classNode);
             case FML_SECURITY_MANAGER -> tfFmlSecurityManager(classNode);
         }
@@ -150,6 +148,43 @@ public class ForgePatchTransformer implements RfbClassTransformer {
 
         if (matches < 2) {
             logger.warn("Only found {}<2 instances of AIOOB fixes in FMLSecurityManager", matches);
+        }
+    }
+
+    private void tfClassPatchManager(@NotNull ClassNodeHandle handle) {
+        // Fix an infinite loop if an EOFException happens
+        final ClassNode node = handle.getNode();
+        if (node == null || node.methods == null) {
+            logger.error("Class patch manager missing class data");
+            return;
+        }
+        for (final MethodNode mn : node.methods) {
+            if (!"setup".equals(mn.name)) {
+                continue;
+            }
+            if (mn.instructions == null || mn.instructions.size() == 0) {
+                logger.error("ClassPatchManager#setup(Side) missing code");
+                return;
+            }
+            for (final AbstractInsnNode insn : mn.instructions) {
+                if (insn.getOpcode() != INVOKEVIRTUAL) {
+                    continue;
+                }
+                if (!(insn instanceof MethodInsnNode minsn)) {
+                    continue;
+                }
+                if (!"java/util/jar/JarInputStream".equals(minsn.owner)) {
+                    continue;
+                }
+                if (!"getNextJarEntry".equals(minsn.name)) {
+                    continue;
+                }
+                // redirect
+                minsn.setOpcode(INVOKESTATIC);
+                minsn.owner = "me/eigenraven/lwjgl3ify/redirects/JarInputStream";
+                minsn.name = "getNextJarEntrySafe";
+                minsn.desc = "(Ljava/util/jar/JarInputStream;)Ljava/util/jar/JarEntry;";
+            }
         }
     }
 }

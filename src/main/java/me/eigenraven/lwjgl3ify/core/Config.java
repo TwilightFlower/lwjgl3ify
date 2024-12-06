@@ -14,8 +14,7 @@ public class Config {
     private static boolean configLoaded = false;
 
     public static boolean MIXIN_STBI_TEXTURE_LOADING = true;
-    public static boolean MIXIN_STBI_TEXTURE_STICHING = true;
-    public static boolean MIXIN_STBI_IGNORE_FASTCRAFT = false;
+    public static boolean MIXIN_STBI_TEXTURE_STITCHING = true;
 
     public static boolean DEBUG_PRINT_KEY_EVENTS = false;
     public static boolean DEBUG_PRINT_MOUSE_EVENTS = false;
@@ -25,7 +24,10 @@ public class Config {
     public static boolean SHOW_LWJGL_VERSION = true;
 
     public static boolean WINDOW_START_MAXIMIZED = false, WINDOW_START_FOCUSED = true, WINDOW_START_ICONIFIED = false;
+    public static boolean WINDOW_CENTERED = true;
     public static boolean WINDOW_DECORATED = true;
+    public static boolean WINDOW_BORDERLESS_REPLACES_FULLSCREEN = false;
+    public static boolean WINDOW_BORDERLESS_WINDOWS_COMPATIBILITY = true;
     public static boolean OPENGL_DEBUG_CONTEXT = false;
     public static boolean OPENGL_SRGB_CONTEXT = false;
     public static boolean OPENGL_DOUBLEBUFFER = true;
@@ -80,17 +82,12 @@ public class Config {
             "stbiTextureLoading",
             CATEGORY_MIXIN,
             MIXIN_STBI_TEXTURE_LOADING,
-            "Use the faster stb_image-based texture loader");
-        MIXIN_STBI_TEXTURE_STICHING = config.getBoolean(
-            "stbiTextureStiching",
+            "Use the faster stb_image-based texture loader. Disabled regardless of config if VintageFix is loaded");
+        MIXIN_STBI_TEXTURE_STITCHING = config.getBoolean(
+            "stbiTextureStitching",
             CATEGORY_MIXIN,
-            MIXIN_STBI_TEXTURE_STICHING,
-            "Use the much faster stb_rectpack-based texture stitcher");
-        MIXIN_STBI_IGNORE_FASTCRAFT = config.getBoolean(
-            "stbiIgnoreFastcraft",
-            CATEGORY_MIXIN,
-            MIXIN_STBI_IGNORE_FASTCRAFT,
-            "Force-enable the STB mixins even if FastCraft is present, may lead to a rapidly flashing screen and other visual artifacts");
+            MIXIN_STBI_TEXTURE_STITCHING,
+            "Use the much faster stb_rectpack-based texture stitcher. Disabled regardless of config if VintageFix is loaded");
 
         DEBUG_PRINT_KEY_EVENTS = config.getBoolean(
             "printKeyEvents",
@@ -118,6 +115,17 @@ public class Config {
         WINDOW_START_FOCUSED = config.getBoolean("focused", CATEGORY_WINDOW, WINDOW_START_FOCUSED, "Start focused?");
         WINDOW_START_ICONIFIED = config
             .getBoolean("iconified", CATEGORY_WINDOW, WINDOW_START_ICONIFIED, "Start iconified?");
+        WINDOW_CENTERED = config.getBoolean("centered", CATEGORY_WINDOW, WINDOW_CENTERED, "Start centered?");
+        WINDOW_BORDERLESS_REPLACES_FULLSCREEN = config.getBoolean(
+            "borderless",
+            CATEGORY_WINDOW,
+            WINDOW_BORDERLESS_REPLACES_FULLSCREEN,
+            "Should exclusive fullscreen mode replaced with borderless fullscreen mode");
+        WINDOW_BORDERLESS_WINDOWS_COMPATIBILITY = config.getBoolean(
+            "borderlessWindowsCompatibility",
+            CATEGORY_WINDOW,
+            WINDOW_BORDERLESS_WINDOWS_COMPATIBILITY,
+            "Windows-only - should borderless window have height increased by 1 to solve flickering on un-focusing");
         WINDOW_DECORATED = config.getBoolean(
             "decorated",
             CATEGORY_WINDOW,

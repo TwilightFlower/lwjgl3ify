@@ -3,6 +3,8 @@ package me.eigenraven.lwjgl3ify.hotswap;
 import java.lang.reflect.Field;
 import java.util.Set;
 
+import com.gtnewhorizons.retrofuturabootstrap.Main;
+import com.gtnewhorizons.retrofuturabootstrap.api.RfbClassTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
@@ -42,6 +44,15 @@ public class TransformHelper {
         for (final IClassTransformer xformer : loader.getTransformers()) {
             classBytes = xformer.transform(name, name, classBytes);
         }
+
+        classBytes = loader.runRfbTransformers(
+            Main.getRfbTransformers(),
+            RfbClassTransformer.Context.LCL_WITH_TRANSFORMS,
+            null,
+            name,
+            classBytes);
+
+
 
         return classBytes;
     }
