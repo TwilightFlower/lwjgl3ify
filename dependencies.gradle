@@ -7,8 +7,8 @@ minecraft {
 def addGtForTesting = Boolean.parseBoolean(project.getProperties().getOrDefault("withGregtech", "false").toString())
 def addReikaModsForTesting = Boolean.parseBoolean(project.getProperties().getOrDefault("withReikaMods", "false").toString())
 
-def asmVersion = '9.7'
-def rfbVersion = '1.0.6'
+def asmVersion = '9.7.1'
+def rfbVersion = '1.0.7'
 // 100% binary compatible, 1 minor source compatibility issue (removed a throws IOException clause)
 def gsonVersion = '2.10.1'
 
@@ -42,8 +42,10 @@ dependencies {
     forgePatchesEmbeddedRecompile("org.ow2.asm:asm-util:${asmVersion}")
 
     forgePatchesEmbedded("org.apache.commons:commons-lang3:3.14.0")
-    forgePatchesEmbedded("org.apache.commons:commons-compress:1.26.0")
+    forgePatchesEmbedded("org.apache.commons:commons-compress:1.26.2")
     forgePatchesEmbedded("commons-io:commons-io:2.15.1")
+
+    forgePatchesEmbedded("org.mvel:mvel2:2.5.2.Final")
 
     compileOnly("org.jetbrains:annotations:24.1.0")
 
