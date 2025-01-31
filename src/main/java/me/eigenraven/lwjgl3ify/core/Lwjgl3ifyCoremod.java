@@ -60,24 +60,29 @@ public class Lwjgl3ifyCoremod implements IFMLLoadingPlugin, IEarlyMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
+
         List<String> mixins = new ArrayList<>();
         mixins.add("mixins.lwjgl3ify.early.json");
 
-        // STB replacements for vanilla functions
-        if (Config.MIXIN_STBI_TEXTURE_LOADING) {
-            LOGGER.info("Enabling STB texture loading mixin");
-            mixins.add("mixins.lwjgl3ify.early.stb_tex.json");
-        } else {
-            LOGGER.info("Disabling STB texture loading mixin");
-        }
+        // Check if VintageFix is loaded
+        try {
+            Launch.classLoader.findClass("org.embeddedt.vintagefix.core.VintageFixCore");
+        } catch (ClassNotFoundException e) {
+            // STB replacements for vanilla functions
+            if (Config.MIXIN_STBI_TEXTURE_LOADING) {
+                LOGGER.info("Enabling STB texture loading mixin");
+                mixins.add("mixins.lwjgl3ify.early.stb_tex.json");
+            } else {
+                LOGGER.info("Disabling STB texture loading mixin");
+            }
 
-        if (Config.MIXIN_STBI_TEXTURE_STICHING) {
-            LOGGER.info("Enabling STB texture stitching mixin");
-            mixins.add("mixins.lwjgl3ify.early.stb_stitch.json");
-        } else {
-            LOGGER.info("Disabling STB texture stitching mixin");
+            if (Config.MIXIN_STBI_TEXTURE_STITCHING) {
+                LOGGER.info("Enabling STB texture stitching mixin");
+                mixins.add("mixins.lwjgl3ify.early.stb_stitch.json");
+            } else {
+                LOGGER.info("Disabling STB texture stitching mixin");
+            }
         }
-
         return mixins;
     }
 }

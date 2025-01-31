@@ -3,7 +3,8 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.stream.Collectors;
+import java.util.stream.Collectors
+import java.nio.charset.StandardCharsets
 
 def taskGroup = "lwjgl3ify"
 
@@ -13,26 +14,39 @@ def newJavaToolchainSpec = {
 }
 
 def addOpens = [
-    "java.base/jdk.internal.loader=ALL-UNNAMED",
-    "java.base/java.net=ALL-UNNAMED",
-    "java.base/java.nio=ALL-UNNAMED",
     "java.base/java.io=ALL-UNNAMED",
-    "java.base/java.lang=ALL-UNNAMED",
     "java.base/java.lang.invoke=ALL-UNNAMED",
     "java.base/java.lang.ref=ALL-UNNAMED",
-    "java.base/java.util.concurrent.locks=ALL-UNNAMED",
     "java.base/java.lang.reflect=ALL-UNNAMED",
-    "java.base/java.security=ALL-UNNAMED",
+    "java.base/java.lang=ALL-UNNAMED",
+    "java.base/java.net.spi=ALL-UNNAMED",
+    "java.base/java.net=ALL-UNNAMED",
+    "java.base/java.nio.channels=ALL-UNNAMED",
+    "java.base/java.nio.charset=ALL-UNNAMED",
+    "java.base/java.nio.file=ALL-UNNAMED",
+    "java.base/java.nio=ALL-UNNAMED",
     "java.base/java.text=ALL-UNNAMED",
+    "java.base/java.time.chrono=ALL-UNNAMED",
+    "java.base/java.time.format=ALL-UNNAMED",
+    "java.base/java.time.temporal=ALL-UNNAMED",
+    "java.base/java.time.zone=ALL-UNNAMED",
+    "java.base/java.time=ALL-UNNAMED",
+    "java.base/java.util.concurrent.atomics=ALL-UNNAMED",
+    "java.base/java.util.concurrent.locks=ALL-UNNAMED",
+    "java.base/java.util.jar=ALL-UNNAMED",
+    "java.base/java.util.zip=ALL-UNNAMED",
     "java.base/java.util=ALL-UNNAMED",
+    "java.base/jdk.internal.loader=ALL-UNNAMED",
+    "java.base/jdk.internal.misc=ALL-UNNAMED",
+    "java.base/jdk.internal.ref=ALL-UNNAMED",
     "java.base/jdk.internal.reflect=ALL-UNNAMED",
     "java.base/sun.nio.ch=ALL-UNNAMED",
-    "jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED,java.naming",
-    "java.desktop/sun.awt=ALL-UNNAMED",
-    "java.desktop/sun.awt.image=ALL-UNNAMED",
     "java.desktop/com.sun.imageio.plugins.png=ALL-UNNAMED",
+    "java.desktop/sun.awt.image=ALL-UNNAMED",
+    "java.desktop/sun.awt=ALL-UNNAMED",
+    "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED",
     "jdk.dynalink/jdk.dynalink.beans=ALL-UNNAMED",
-    "java.sql.rowset/javax.sql.rowset.serial=ALL-UNNAMED"
+    "jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED,java.naming"
 ]
 
 def extraJavaArgs = [
@@ -121,9 +135,12 @@ def forgePatchesJar = tasks.register('forgePatchesJar', Jar) {
             filesMatching("META-INF/*") {
                 name = "${dep.name}-${this.name}"
             }
+            exclude 'META-INF/services/javax.script.ScriptEngineFactory'
         }
     }
-
+        from(resources.text.fromString("org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory\norg.mvel2.jsr223.MvelScriptEngineFactory").asFile(StandardCharsets.UTF_8.name())) {
+        rename { return "META-INF/services/javax.script.ScriptEngineFactory" }
+    }
     exclude("module-info.class")
     exclude("META-INF/versions/9/module-info.class")
     exclude("log4j2.xml")

@@ -1,6 +1,7 @@
 package org.lwjglx.opengl;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.awt.Canvas;
@@ -9,8 +10,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Optional;
 
+import net.minecraft.client.Minecraft;
+
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCharCallback;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -27,12 +34,16 @@ import org.lwjgl.glfw.GLFWWindowRefreshCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.Platform;
 import org.lwjglx.BufferUtils;
 import org.lwjglx.Sys;
 import org.lwjglx.input.KeyCodes;
 import org.lwjglx.input.Keyboard;
 import org.lwjglx.input.Mouse;
+import org.lwjglx.util.Rectangle;
+
+import com.github.bsideup.jabel.Desugar;
 
 import me.eigenraven.lwjgl3ify.Lwjgl3ify;
 import me.eigenraven.lwjgl3ify.api.InputEvents;
@@ -49,6 +60,7 @@ public class Display {
     private static boolean displayDirty = false;
     private static boolean displayResizable = false;
     private static boolean startFullscreen = false;
+    private static boolean borderlessInsteadOfFullscreen = true;
 
     private static DisplayMode mode = new DisplayMode(854, 480);
     private static DisplayMode desktopDisplayMode = new DisplayMode(854, 480);
@@ -113,7 +125,6 @@ public class Display {
      *
      * @param pixelFormat    Describes the minimum specifications the context must fulfill.
      * @param sharedDrawable The Drawable to share context with. (optional, may be null)
-     *
      * @throws org.lwjglx.LWJGLException
      */
     public static void create(PixelFormat pixelFormat, Drawable sharedDrawable) {
@@ -186,8 +197,10 @@ public class Display {
         glfwWindowHintString(GLFW_X11_CLASS_NAME, Config.X11_CLASS_NAME);
         glfwWindowHintString(GLFW_COCOA_FRAME_NAME, Config.COCOA_FRAME_NAME);
 
-        glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE); // request a non-hidpi framebuffer on Retina displays
-                                                                   // on MacOS
+        if (Config.WINDOW_CENTERED) {
+            glfwWindowHint(GLFW_POSITION_X, (monitorWidth - mode.getWidth()) / 2);
+            glfwWindowHint(GLFW_POSITION_Y, (monitorHeight - mode.getHeight()) / 2);
+        }
 
         Window.handle = glfwCreateWindow(mode.getWidth(), mode.getHeight(), windowTitle, NULL, sharedWindow);
         if (Window.handle == 0L) {
@@ -235,7 +248,7 @@ public class Display {
                     }
                 }
                 if (key > GLFW_KEY_SPACE && key <= GLFW_KEY_GRAVE_ACCENT) { // Handle keys have a char. Exclude space to
-                                                                            // avoid extra input when switching IME
+                    // avoid extra input when switching IME
 
                     /*
                      * AltGr and LAlt require special consideration.
@@ -280,7 +293,7 @@ public class Display {
                         Keyboard.addGlfwKeyEvent(window, key, scancode, action, mods, (char) (key & 0x1f));
                         cancelNextChar = true; // Cancel char event from ctrl key since its already handled here
                     } else if (action > 0) { // Delay press and repeat key event to actual char input. There is ALWAYS a
-                                             // char after them
+                        // char after them
                         ingredientKeyEvent = new Keyboard.KeyEvent(
                             KeyCodes.glfwToLwjgl(key),
                             '\0',
@@ -438,11 +451,13 @@ public class Display {
         displayWidth = mode.getWidth();
         displayHeight = mode.getHeight();
 
-        IntBuffer fbw = BufferUtils.createIntBuffer(1);
-        IntBuffer fbh = BufferUtils.createIntBuffer(1);
-        GLFW.glfwGetFramebufferSize(Window.handle, fbw, fbh);
-        displayFramebufferWidth = fbw.get(0);
-        displayFramebufferHeight = fbh.get(0);
+        try (MemoryStack stack = stackPush()) {
+            IntBuffer fbw = stack.mallocInt(1);
+            IntBuffer fbh = stack.mallocInt(1);
+            GLFW.glfwGetFramebufferSize(Window.handle, fbw, fbh);
+            displayFramebufferWidth = fbw.get(0);
+            displayFramebufferHeight = fbh.get(0);
+        }
 
         displayX = (monitorWidth - mode.getWidth()) / 2;
         displayY = (monitorHeight - mode.getHeight()) / 2;
@@ -593,19 +608,14 @@ public class Display {
         return displayY;
     }
 
+    // vanilla and forge both expect these to return the framebuffer width
+    // rather than the window width, and they both call glViewport with the
+    // result
     public static int getWidth() {
-        return displayWidth;
-    }
-
-    public static int getHeight() {
-        return displayHeight;
-    }
-
-    public static int getFramebufferWidth() {
         return displayFramebufferWidth;
     }
 
-    public static int getFramebufferHeight() {
+    public static int getHeight() {
         return displayFramebufferHeight;
     }
 
@@ -636,21 +646,23 @@ public class Display {
             return 0;
         }
         GLFWImage.Buffer glfwImages = GLFWImage.calloc(icons.length);
-        ByteBuffer[] nativeBuffers = new ByteBuffer[icons.length];
-        for (int icon = 0; icon < icons.length; icon++) {
-            nativeBuffers[icon] = org.lwjgl.BufferUtils.createByteBuffer(icons[icon].capacity());
-            nativeBuffers[icon].put(icons[icon]);
-            nativeBuffers[icon].flip();
-            int dimension = (int) Math.sqrt(nativeBuffers[icon].limit() / 4D);
-            if (dimension * dimension * 4 != nativeBuffers[icon].limit()) {
-                throw new IllegalStateException();
+        try (MemoryStack stack = stackPush()) {
+            ByteBuffer[] nativeBuffers = new ByteBuffer[icons.length];
+            for (int icon = 0; icon < icons.length; icon++) {
+                nativeBuffers[icon] = stack.malloc(icons[icon].capacity());
+                nativeBuffers[icon].put(icons[icon]);
+                nativeBuffers[icon].flip();
+                int dimension = (int) Math.sqrt(nativeBuffers[icon].limit() / 4D);
+                if (dimension * dimension * 4 != nativeBuffers[icon].limit()) {
+                    throw new IllegalStateException();
+                }
+                glfwImages.put(
+                    icon,
+                    GLFWImage.create()
+                        .set(dimension, dimension, nativeBuffers[icon]));
             }
-            glfwImages.put(
-                icon,
-                GLFWImage.create()
-                    .set(dimension, dimension, nativeBuffers[icon]));
+            GLFW.glfwSetWindowIcon(getWindow(), glfwImages);
         }
-        GLFW.glfwSetWindowIcon(getWindow(), glfwImages);
         glfwImages.free();
         return 0;
     }
@@ -672,6 +684,62 @@ public class Display {
     private static int savedX[] = new int[1], savedY[] = new int[1];
     private static int savedW[] = new int[1], savedH[] = new int[1];
 
+    public static PositionedGLFWVidMode getTargetFullscreenMonitor() {
+        int x = savedX[0] + (savedW[0] / 2);
+        int y = savedY[0] + (savedH[0] / 2);
+
+        PointerBuffer monitors = glfwGetMonitors();
+        assert monitors != null;
+        ArrayList<PositionedGLFWVidMode> monitorInfos = new ArrayList<>(monitors.limit());
+        for (int i = 0; i < monitors.limit(); i++) {
+            long monitor = monitors.get(i);
+
+            PositionedGLFWVidMode monitorInfo = getPositionedMonitorInfo(monitor);
+            monitorInfos.add(monitorInfo);
+
+            if (monitorInfo.bounds.contains(x, y)) {
+                return monitorInfo;
+            }
+        }
+
+        // If the center of the screen doesn't contains in any monitors, try to look by intersect area
+        Rectangle windowBounds = new Rectangle(savedX[0], savedY[0], savedW[0], savedH[0]);
+        Optional<PositionedGLFWVidMode> targetMonitor = monitorInfos.stream()
+            .filter(
+                o -> !o.bounds.intersection(windowBounds, null)
+                    .isEmpty())
+            .max(
+                Comparator.comparingInt(
+                    o -> o.bounds.intersection(windowBounds, null)
+                        .getArea()));
+
+        return targetMonitor.orElse(getPositionedMonitorInfo(glfwGetPrimaryMonitor()));
+    }
+
+    private static PositionedGLFWVidMode getPositionedMonitorInfo(long monitorId) {
+        int x, y;
+        try (MemoryStack stack = stackPush()) {
+            IntBuffer posX = stack.mallocInt(1);
+            IntBuffer posY = stack.mallocInt(1);
+
+            glfwGetMonitorPos(monitorId, posX, posY);
+            x = posX.get(0);
+            y = posY.get(0);
+        }
+
+        GLFWVidMode vidmode = glfwGetVideoMode(monitorId);
+        assert vidmode != null;
+        return new PositionedGLFWVidMode(
+            x,
+            y,
+            new Rectangle(x, y, vidmode.width(), vidmode.height()),
+            monitorId,
+            vidmode);
+    }
+
+    @Desugar
+    public record PositionedGLFWVidMode(int x, int y, Rectangle bounds, long monitorId, GLFWVidMode vidMode) {}
+
     public static void setFullscreen(boolean fullscreen) {
         final long window = getWindow();
         if (window == 0) {
@@ -682,15 +750,100 @@ public class Display {
         if (currentState == fullscreen) {
             return;
         }
+
+        glfwSetWindowSizeLimits(window, 0, 0, GLFW_DONT_CARE, GLFW_DONT_CARE);
         if (fullscreen) {
             glfwGetWindowPos(window, savedX, savedY);
             glfwGetWindowSize(window, savedW, savedH);
-            long monitorId = glfwGetPrimaryMonitor();
-            final GLFWVidMode vidMode = glfwGetVideoMode(monitorId);
-            glfwSetWindowMonitor(window, monitorId, 0, 0, vidMode.width(), vidMode.height(), vidMode.refreshRate());
+            PositionedGLFWVidMode monitorInfo = getTargetFullscreenMonitor();
+            GLFWVidMode vidMode = monitorInfo.vidMode;
+            glfwSetWindowMonitor(
+                window,
+                monitorInfo.monitorId,
+                0,
+                0,
+                vidMode.width(),
+                vidMode.height(),
+                vidMode.refreshRate());
+            Minecraft.getMinecraft()
+                .resize(vidMode.width(), vidMode.height());
         } else {
+            glfwSetWindowSize(window, savedW[0], savedH[0]);
             glfwSetWindowMonitor(window, NULL, savedX[0], savedY[0], savedW[0], savedH[0], 0);
         }
+    }
+
+    public static void toggleBorderless() {
+        setBorderless(!isBorderless());
+    }
+
+    public static void setBorderless(boolean toBorderless) {
+        final long window = getWindow();
+        if (window == NULL) {
+            return;
+        }
+        if (toBorderless) {
+            glfwGetWindowPos(window, savedX, savedY);
+            glfwGetWindowSize(window, savedW, savedH);
+            PositionedGLFWVidMode monitorInfo = getTargetFullscreenMonitor();
+            GLFWVidMode vidMode = monitorInfo.vidMode;
+
+            int height = vidMode.height();
+
+            // Fix bothered from
+            // https://github.com/Kir-Antipov/cubes-without-borders/blob/b38306bf17d3f0936475a3a28c4ee2be4e881a62/src/main/java/dev/kir/cubeswithoutborders/mixin/WindowMixin.java#L130
+            // There's a bug that causes a fullscreen window to flicker when it loses focus.
+            // As far as I know, this is relevant for Windows and X11 desktops.
+            // Fuck X11 - it's a perpetually broken piece of legacy.
+            // However, we do need to implement a fix for Windows desktops, as they
+            // are not going anywhere in the foreseeable future (sadly enough).
+            // This "fix" involves not bringing a window into a "proper" fullscreen mode,
+            // but rather stretching it 1 pixel beyond the screen's supported resolution.
+            if (Config.WINDOW_BORDERLESS_WINDOWS_COMPATIBILITY && System.getProperty("os.name")
+                .toLowerCase()
+                .contains("win")) {
+                height = height + 1;
+            }
+
+            glfwSetWindowSizeLimits(window, 0, 0, vidMode.width(), height);
+            glfwSetWindowSize(window, vidMode.width(), height);
+            glfwSetWindowMonitor(
+                window,
+                NULL,
+                monitorInfo.x,
+                monitorInfo.y,
+                vidMode.width(),
+                height,
+                vidMode.refreshRate());
+        } else {
+            glfwSetWindowSizeLimits(window, 0, 0, GLFW_DONT_CARE, GLFW_DONT_CARE);
+            glfwSetWindowSize(window, savedW[0], savedH[0]);
+            glfwSetWindowMonitor(window, NULL, savedX[0], savedY[0], savedW[0], savedH[0], 0);
+        }
+    }
+
+    public static boolean isBorderless() {
+        long window = Display.getWindow();
+        long windowMonitor = glfwGetWindowMonitor(Display.getWindow());
+        if (Display.getWindow() != 0 && windowMonitor == NULL) {
+            try (MemoryStack stack = stackPush()) {
+                IntBuffer windowX = stack.mallocInt(1);
+                IntBuffer windowY = stack.mallocInt(1);
+                IntBuffer windowWidth = stack.mallocInt(1);
+                IntBuffer windowHeight = stack.mallocInt(1);
+
+                glfwGetWindowPos(window, windowX, windowY);
+                glfwGetWindowSize(window, windowWidth, windowHeight);
+
+                Display.PositionedGLFWVidMode monitorInfo = Display.getTargetFullscreenMonitor();
+                GLFWVidMode vidMode = monitorInfo.vidMode();
+
+                return windowX.get(0) == monitorInfo.x() && windowY.get(0) == monitorInfo.y()
+                    && windowWidth.get(0) == vidMode.width()
+                    && (windowHeight.get(0) >= vidMode.height());
+            }
+        }
+        return false;
     }
 
     public static boolean isFullscreen() {
@@ -742,10 +895,20 @@ public class Display {
         if (!isCreated()) {
             return 1.0f;
         }
-        float[] xScale = new float[1];
-        float[] yScale = new float[1];
-        glfwGetWindowContentScale(getWindow(), xScale, yScale);
-        return Math.max(xScale[0], yScale[0]);
+        int[] windowWidth = new int[1];
+        int[] windowHeight = new int[1];
+        int[] framebufferWidth = new int[1];
+        int[] framebufferHeight = new int[1];
+        float xScale, yScale;
+        // via technicality we actually have to divide the framebuffer
+        // size by the window size here, since glfwGetWindowContentScale
+        // returns a value not equal to 1 even on platforms where the
+        // framebuffer size and window size always map 1:1
+        glfwGetWindowSize(getWindow(), windowWidth, windowHeight);
+        glfwGetFramebufferSize(getWindow(), framebufferWidth, framebufferHeight);
+        xScale = (float) framebufferWidth[0] / windowWidth[0];
+        yScale = (float) framebufferHeight[0] / windowHeight[0];
+        return Math.max(xScale, yScale);
     }
 
     public static void setSwapInterval(int value) {
