@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
-
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import scala.tools.asm.Opcodes;
 
 @Mixin(value = net.minecraftforge.fml.common.eventhandler.ASMEventHandler.class, remap = false)
@@ -34,14 +34,12 @@ public class ASMEventHandler {
     }
 
     // LagGoggles fix
-    @Inject(
-        method = "<clinit>",
-        at = @At("TAIL"),
-        remap = false)
+    @Inject(method = "<clinit>", at = @At("TAIL"), remap = false)
     private static void loadLagGogglesField(CallbackInfo info) {
         Field ownerFieldField;
         try {
-            Class<?> transformerClass = Class.forName("com.github.terminatornl.laggoggles.tickcentral.EventBusTransformer");
+            Class<?> transformerClass = Class
+                .forName("com.github.terminatornl.laggoggles.tickcentral.EventBusTransformer");
             ownerFieldField = transformerClass.getDeclaredField("ownerField");
         } catch (ClassNotFoundException | NoSuchFieldException e) {
             // LagGoggles isn't installed, or updated to remove this field. We don't care.
@@ -49,7 +47,8 @@ public class ASMEventHandler {
         }
 
         try {
-            Field ownerField = net.minecraftforge.fml.common.eventhandler.ASMEventHandler.class.getDeclaredField("owner");
+            Field ownerField = net.minecraftforge.fml.common.eventhandler.ASMEventHandler.class
+                .getDeclaredField("owner");
             ownerField.setAccessible(true);
             ownerFieldField.set(null, ownerField);
         } catch (NoSuchFieldException | IllegalAccessException e) {

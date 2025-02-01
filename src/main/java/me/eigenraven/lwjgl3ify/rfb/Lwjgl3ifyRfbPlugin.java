@@ -7,7 +7,6 @@ import java.lang.invoke.MethodType;
 
 import javax.swing.JOptionPane;
 
-import me.eigenraven.lwjgl3ify.rfb.transformers.*;
 import net.minecraft.launchwrapper.Launch;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +16,10 @@ import com.google.common.base.Throwables;
 import com.gtnewhorizons.retrofuturabootstrap.api.PluginContext;
 import com.gtnewhorizons.retrofuturabootstrap.api.RfbClassTransformer;
 import com.gtnewhorizons.retrofuturabootstrap.api.RfbPlugin;
+
+import me.eigenraven.lwjgl3ify.rfb.transformers.*;
+import me.eigenraven.lwjgl3ify.rfb.transformers.mod.EnderCoreTransformer;
+import me.eigenraven.lwjgl3ify.rfb.transformers.mod.LagGogglesTransformer;
 
 public class Lwjgl3ifyRfbPlugin implements RfbPlugin {
 
@@ -46,7 +49,8 @@ public class Lwjgl3ifyRfbPlugin implements RfbPlugin {
     @Override
     public @NotNull RfbClassTransformer @Nullable [] makeTransformers() {
         return new RfbClassTransformer[] { new LwjglRedirectTransformer(), new ExtensibleEnumTransformer(),
-            new UnfinalizeObjectHoldersTransformer(), new ForgePatchTransformer(), new LagGogglesTransformer()};
+            new UnfinalizeObjectHoldersTransformer(), new ForgePatchTransformer(), new LagGogglesTransformer(),
+            new EnderCoreTransformer() };
     }
 
     private void verifyJavaVersion() {
