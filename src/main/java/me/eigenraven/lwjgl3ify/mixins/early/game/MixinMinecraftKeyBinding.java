@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 public class MixinMinecraftKeyBinding {
 
     @Redirect(
-        method = "runTick",
+        method = "runTickKeyboard",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/settings/KeyBinding;setKeyBindState(IZ)V"),
         slice = @Slice(from = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;next()Z", remap = false)))
     private void lwjgl3ify$noKeybindUpdateHere(int eventKey, boolean eventKeyState) {
@@ -22,7 +22,7 @@ public class MixinMinecraftKeyBinding {
     }
 
     @Redirect(
-        method = "runTick",
+        method = "runTickKeyboard",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/settings/KeyBinding;onTick(I)V"),
         slice = @Slice(from = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;next()Z", remap = false)))
     private void lwjgl3ify$noKeybindTickHere(int eventKey) {
