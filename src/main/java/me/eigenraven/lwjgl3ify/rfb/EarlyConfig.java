@@ -32,7 +32,14 @@ public class EarlyConfig {
         "net.minecraft.util.BlockRenderLayer", "net.minecraft.util.EnumBlockRenderType",
 
         // Wizardry
-        "net.minecraft.util.SoundCategory" };
+        "net.minecraft.util.SoundCategory",
+
+        // Actually Additions
+        "net.minecraft.tileentity.BannerPattern",
+
+        // Tinkers Construct
+        "net.minecraftforge.common.EnumPlantType"
+    };
 
     public static final Set<String> EXTENSIBLE_ENUMS = new HashSet<>(Arrays.asList(DEFAULT_EXTENSIBLE_ENUMS));
 
